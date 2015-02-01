@@ -12,13 +12,13 @@ import scala.concurrent.Future
 
 object Vendors extends Controller with MongoController {
 
-  import Vendor._
+  import domain.Vendor._
 
   def create(vendor: String) = Action.async { request =>
     Future.successful {
-      request.headers.get("access_token").fold(Forbidden(err(vendor))) {
-        case s if s == secret => Ok(persist(vendor))
-        case _ => Forbidden(err(vendor))
+      request.headers.get("access_token").fold(Forbidden(errmesg(vendor))) {
+        case s if s == secret => Ok(succmesg(persist(vendor)))
+        case _ => Forbidden(errmesg(vendor))
       }
     }
   }
@@ -27,10 +27,12 @@ object Vendors extends Controller with MongoController {
 
   private def persist(vendor: String) = {
     collection.insert(Vendor(vendor, TokenGenerator.generateSHAToken(vendor)))
-    s"Persisted $vendor"
+    vendor
   }
 
-  private def err(vendor: String) = s"Can not persist $vendor"
+  private def succmesg(vendor: String) = s"Persisted $vendor"
+
+  private def errmesg(vendor: String) = s"Can not persist $vendor"
 
   private def secret = Play.current.configuration.getString("access.token").getOrElse("invalid")
 }
