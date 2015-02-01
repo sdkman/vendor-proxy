@@ -5,7 +5,7 @@ import play.api.libs.json.Json
 import play.modules.reactivemongo.json.collection.JSONCollection
 import utils.TokenGenerator
 
-case class Vendor(name: String, token: String)
+case class Vendor(_id: String, name: String, token: String)
 
 object Vendor {
   implicit val userFormat = Json.format[Vendor]
@@ -19,7 +19,8 @@ trait VendorPersistence {
   def collection: JSONCollection = db.collection[JSONCollection]("vendors")
 
   def persist(vendor: String) = {
-    collection.insert(Vendor(vendor, TokenGenerator.generateSHAToken(vendor)))
+    val oid = TokenGenerator.generateConsumerKey(vendor)
+    collection.insert(Vendor(oid, vendor, TokenGenerator.generateSHAToken(vendor)))
     vendor
   }
 

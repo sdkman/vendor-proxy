@@ -60,18 +60,18 @@ object TokenGenerator {
    *  Hash the Token to return a 32 or 64 character HEX String
    *
    *  Parameters:
-   *  tokenprifix: string to concatenate with random generated token prior to HASH to improve uniqueness, such as username
+   *  tokenprefix: string to concatenate with random generated token prior to HASH to improve uniqueness, such as username
    *
    *  Returns:
    *  MD5 hash of (username + current time + random token generator) as token, 128 bits, 32 characters
-   * or
+   *  or
    *  SHA-256 hash of (username + current time + random token generator) as token, 256 bits, 64 characters
    */
-  def generateMD5Token(tokenprefix: String): String = {
+  def generateMD5Token(tokenprefix: String): String =
     md5(tokenprefix + System.nanoTime() + generateToken(TOKEN_LENGTH))
-  }
 
-  def generateSHAToken(tokenprefix: String): String = {
+  def generateSHAToken(tokenprefix: String): String =
     sha(tokenprefix + System.nanoTime() + generateToken(TOKEN_LENGTH))
-  }
+
+  def generateConsumerKey(vendor: String): String = md5(vendor)
 }
