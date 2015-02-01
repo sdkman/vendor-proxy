@@ -15,7 +15,7 @@ object Vendors extends Controller with MongoController {
   import domain.Vendor._
 
   def create(vendor: String) = Action.async { request =>
-    Future.successful {
+    Future {
       request.headers.get("access_token").fold(Forbidden(errmesg(vendor))) {
         case s if s == secret => Ok(succmesg(persist(vendor)))
         case _ => Forbidden(errmesg(vendor))
