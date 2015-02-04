@@ -1,7 +1,7 @@
 package controllers
 
 import domain.VendorPersistence
-import play.api.Play
+import play.api.libs.json.Json
 import play.api.mvc._
 import play.modules.reactivemongo.MongoController
 
@@ -10,14 +10,20 @@ import scala.concurrent.Future
 
 object Vendors extends Controller with MongoController with VendorPersistence {
 
-  def create(vendor: String) = Action.async { request =>
+  case class VendorRequest(vendor: String)
+  object VendorRequest {
+    implicit val reads = Json.format[VendorRequest]
+  }
+
+  def create = Action.async { request =>
     Future {
-      request.headers.get("access_token").fold(Forbidden(errmesg(vendor))) {
-        case s if s == secret => Ok(succmesg(persist(vendor)))
+      val vendor = "groovy"
+      request.headers.get("admin_token").fold(Forbidden(errmesg(vendor))) {
+        case s if s == secret => Created(succmesg(persist(vendor)))
         case _ => Forbidden(errmesg(vendor))
       }
     }
   }
 
-  private def secret = Play.current.configuration.getString("access.token").getOrElse("invalid")
+  private def secret = Option(System.getenv("ADMIN_TOKEN")).getOrElse("invalid")
 }
