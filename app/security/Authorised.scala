@@ -9,14 +9,12 @@ import utils.ErrorMarshalling
 object Authorised extends ErrorMarshalling {
 
   def apply(parser: BodyParser[JsValue])(f: Request[JsValue] => Result) = Action(parser) { req =>
-    req.headers.get("admin_token").fold(Forbidden(errorJson)) {
+    req.headers.get("admin_token").fold(Forbidden(forbiddenMsg)) {
       case s if s == secret => f(req)
-      case _ => Forbidden(errorJson)
+      case _ => Forbidden(forbiddenMsg)
     }
   }
   
-  private val errorJson = toJson(ErrorMessage(401, "Not authorised to use this service."))
-
   private def secret = Option(System.getenv("ADMIN_TOKEN")).getOrElse("default_token")
 
 }

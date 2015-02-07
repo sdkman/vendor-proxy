@@ -9,7 +9,7 @@ import utils.{ErrorMarshalling, VendorMarshalling}
 
 class VendorSteps extends ScalaDsl with EN with ShouldMatchers with VendorMarshalling with ErrorMarshalling {
 
-  val statusCodes = Map("CREATED" -> 201, "FORBIDDEN" -> 403)
+  val statusCodes = Map("CREATED" -> 201, "BAD_REQUEST" -> 400, "FORBIDDEN" -> 403)
 
   Given( """^the Admin Token "(.*?)" is presented$""") { (token: String) =>
     World.adminToken = token

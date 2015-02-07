@@ -17,14 +17,21 @@ Feature: Create Vendor
       |{ "vendor" : "groovy" }
     """
     Then the returned status is "FORBIDDEN"
-    And the payload contains a statusCode of value 401
+    And the payload contains a statusCode of value 403
     And the payload contains message "Not authorised to use this service."
+
+  Scenario: An invalid payload is submitted for Vendor Creation
+    Given the Admin Token "default_token" is presented
+    When the Create Vendor endpoint "/vendors/create" is posted a request:
+    """
+      |{ "rodnev" : "yvoorg" }
+    """
+    Then the returned status is "BAD_REQUEST"
+    And the payload contains a statusCode of value 400
+    And the payload contains message "Malformed request body."
 
   @pending
   Scenario: Vendor details are persisted
-
-  @pending
-  Scenario: An invalid payload is submitted for Vendor Creation
 
   @pending
   Scenario: A Vendor is not unique
