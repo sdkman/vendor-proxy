@@ -27,22 +27,12 @@ object Mongo {
 
   def dropCollection(coll: MongoCollection) = coll.drop()
 
-  def versionPublished(coll: MongoCollection, candidate: String, version: String, url: String): Boolean =
-    coll.findOne(MongoDBObject("candidate" -> candidate, "version" -> version, "url" -> url)).isDefined
+  def vendorExists(coll: MongoCollection, vendor: String): Boolean =
+    coll.findOne(MongoDBObject("name" -> vendor)).isDefined
 
-  def saveVersion(coll: MongoCollection, candidate: String, version: String, url: String) =
-    coll.save(MongoDBObject("candidate" -> candidate, "version" -> version, "url" -> url))
+  def vendorConsumerKey(coll: MongoCollection, vendor: String): Option[String] =
+    coll.findOne(MongoDBObject("name" -> vendor)).map(v => v.getAs[String]("_id").get)
 
-  def saveCandidate(coll: MongoCollection, candidate: String, default: String) =
-    coll.save(MongoDBObject("candidate" -> candidate, "default" -> default))
-
-  def isDefault(coll: MongoCollection, candidate: String, version: String): Boolean =
-    coll.findOne(MongoDBObject("candidate" -> candidate, "default" -> version)).isDefined
-
-  def versionExists(coll: MongoCollection, candidate: String, version: String): Boolean =
-    coll.findOne(MongoDBObject("candidate" -> candidate, "version" -> version)).isDefined
-
-  def candidateExists(coll: MongoCollection, candidate: String): Boolean =
-    coll.findOne(MongoDBObject("candidate" -> candidate)).isDefined
-
+  def vendorConsumerToken(coll: MongoCollection, vendor: String): Option[String] =
+    coll.findOne(MongoDBObject("name" -> vendor)).map(v => v.getAs[String]("token").get)
 }
