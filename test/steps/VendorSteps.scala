@@ -1,18 +1,13 @@
 package steps
 
-import cucumber.api.PendingException
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.ShouldMatchers
 import play.api.libs.json.Json
 import support.World.{responseBody, responseCode, _}
-import support.{World, Http}
+import support.{Http, World}
+import utils.VendorMarshalling
 
-case class VendorPayload(consumerKey: String, consumerToken: String)
-object VendorPayload {
-  implicit val payloadReads = Json.format[VendorPayload]
-}
-
-class VendorSteps extends ScalaDsl with EN with ShouldMatchers {
+class VendorSteps extends ScalaDsl with EN with ShouldMatchers with VendorMarshalling {
 
   val statusCodes = Map("CREATED" -> 201)
 
@@ -30,17 +25,21 @@ class VendorSteps extends ScalaDsl with EN with ShouldMatchers {
     World.responseBody = rb
   }
 
-  Then("""^the status is "(.*?)"$"""){ (status: String) =>
+  Then("""^the returned status is "(.*?)"$"""){ (status: String) =>
     responseCode shouldBe statusCodes(status)
   }
-  
-  Then("""^the payload contains "(.*?)" of value "(.*?)"$"""){ (key: String, value: String) =>
-    val actual = Json.parse(responseBody).as[VendorPayload]
-    actual.consumerKey shouldBe key
+
+  implicit val responseRead = Json.reads[Response]
+
+  Then("""^the payload contains a consumerKey of value "(.*?)"$"""){ (value: String) =>
+    Json.parse(responseBody).validate[Response].asOpt match {
+      case Some(actual) => actual.consumerKey shouldBe value
+      case None => fail("No valid response found.")
+    }
   }
 
-  Then("""^the payload contains a valid "(.*?)"$"""){ (arg0:String) =>
-    val actual = Json.parse(responseBody).as[VendorPayload]
+  Then("""^the payload contains a valid consumerToken$"""){ () =>
+    val actual = Json.parse(responseBody).as[Response]
     actual.consumerToken.length shouldBe 64
   }
 

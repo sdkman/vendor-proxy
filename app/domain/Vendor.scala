@@ -18,14 +18,16 @@ trait VendorPersistence {
 
   def collection: JSONCollection = db.collection[JSONCollection]("vendors")
 
-  def persist(vendor: String) = {
-    val oid = TokenGenerator.generateConsumerKey(vendor)
-    collection.insert(Vendor(oid, vendor, TokenGenerator.generateSHAToken(vendor)))
+  def persist(name: String): Vendor = {
+    val oid = TokenGenerator.generateConsumerKey(name)
+    val token = TokenGenerator.generateSHAToken(name)
+    val vendor = Vendor(oid, name, token)
+    collection.insert(vendor)
     vendor
   }
 
-  def succmesg(vendor: String) = s"Persisted $vendor"
+  def succMsg(vendor: String) = s"Persisted $vendor"
 
-  def errmesg(vendor: String) = s"Can not persist $vendor"
+  def errMsg(vendor: String) = s"Can not persist $vendor"
 
 }
