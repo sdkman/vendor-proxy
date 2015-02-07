@@ -7,8 +7,10 @@ trait VendorMarshalling {
 
   case class Response(consumerKey: String, consumerToken: String, name: String)
 
-  implicit val reads = Json.reads[Request]
+  implicit val requestReads = Json.reads[Request]
 
-  implicit val writes = Json.writes[Response]
+  implicit val responseReads = Json.reads[Response]
+
+  implicit val responseWrites = Json.writes[Response]
 }
 

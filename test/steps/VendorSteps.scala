@@ -5,13 +5,13 @@ import org.scalatest.ShouldMatchers
 import play.api.libs.json.Json
 import support.World.{responseBody, responseCode, _}
 import support.{Http, World}
-import utils.VendorMarshalling
+import utils.{ErrorMarshalling, VendorMarshalling}
 
-class VendorSteps extends ScalaDsl with EN with ShouldMatchers with VendorMarshalling {
+class VendorSteps extends ScalaDsl with EN with ShouldMatchers with VendorMarshalling with ErrorMarshalling {
 
-  val statusCodes = Map("CREATED" -> 201)
+  val statusCodes = Map("CREATED" -> 201, "FORBIDDEN" -> 403)
 
-  Given("""^the valid Admin Token "(.*?)" is presented$"""){ (token: String) =>
+  Given( """^the Admin Token "(.*?)" is presented$""") { (token: String) =>
     World.adminToken = token
   }
 
@@ -29,8 +29,6 @@ class VendorSteps extends ScalaDsl with EN with ShouldMatchers with VendorMarsha
     responseCode shouldBe statusCodes(status)
   }
 
-  implicit val responseRead = Json.reads[Response]
-
   Then("""^the payload contains a consumerKey of value "(.*?)"$"""){ (value: String) =>
     Json.parse(responseBody).validate[Response].asOpt match {
       case Some(actual) => actual.consumerKey shouldBe value
@@ -41,6 +39,20 @@ class VendorSteps extends ScalaDsl with EN with ShouldMatchers with VendorMarsha
   Then("""^the payload contains a valid consumerToken$"""){ () =>
     val actual = Json.parse(responseBody).as[Response]
     actual.consumerToken.length shouldBe 64
+  }
+
+  Then("""the payload contains a statusCode of value (.*)"""){ (status: Int) =>
+    Json.parse(responseBody).validate[ErrorMessage].asOpt match {
+      case Some(actual) => actual.statusCode shouldBe status
+      case None => fail("No valid status code found.")
+    }
+  }
+
+  Then("""the payload contains message "(.*)""""){ (message: String) =>
+    Json.parse(responseBody).validate[ErrorMessage].asOpt match {
+      case Some(actual) => actual.message shouldBe message
+      case None => fail("No valid message found.")
+    }
   }
 
 }
