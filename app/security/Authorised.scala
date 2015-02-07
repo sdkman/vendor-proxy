@@ -8,9 +8,9 @@ import utils.ErrorMarshalling
 
 object Authorised extends ErrorMarshalling {
 
-  def apply(parser: BodyParser[JsValue])(f: Request[JsValue] => Result) = Action(parser) { request =>
-    request.headers.get("admin_token").fold(Forbidden(errorJson)) {
-      case s if s == secret => f(request)
+  def apply(parser: BodyParser[JsValue])(f: Request[JsValue] => Result) = Action(parser) { req =>
+    req.headers.get("admin_token").fold(Forbidden(errorJson)) {
+      case s if s == secret => f(req)
       case _ => Forbidden(errorJson)
     }
   }
