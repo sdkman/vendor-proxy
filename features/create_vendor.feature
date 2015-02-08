@@ -42,3 +42,16 @@ Feature: Create Vendor
 
   @pending
   Scenario: A Vendor is not unique
+    Given the Admin Token "default_token" is presented
+    When the Create Vendor endpoint "/vendors/create" is posted a request:
+    """
+      |{ "vendor" : "groovy" }
+    """
+    Then the returned status is "CREATED"
+    When the Create Vendor endpoint "/vendors/create" is posted a request:
+    """
+      |{ "vendor" : "groovy" }
+    """
+    Then the returned status is "CONFLICT"
+    And the payload contains a statusCode of value 409
+    And the payload contains message "vendor already exists: groovy"

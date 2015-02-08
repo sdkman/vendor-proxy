@@ -11,7 +11,7 @@ class VendorSteps extends ScalaDsl with EN with ShouldMatchers with VendorMarsha
 
   val ConsumerTokenPattern = """^[a-f0-9]{64}$""".r
 
-  val statusCodes = Map("CREATED" -> 201, "BAD_REQUEST" -> 400, "FORBIDDEN" -> 403)
+  val statusCodes = Map("CREATED" -> 201, "BAD_REQUEST" -> 400, "FORBIDDEN" -> 403, "CONFLICT" -> 409)
 
   Before() { scenario =>
     coll = Mongo.createCollection(mongo, "vendors")
