@@ -13,4 +13,6 @@ trait ErrorMarshalling {
   val forbiddenMsg = toJson(ErrorMessage(403, "Not authorised to use this service."))
   
   val badRequestMsg = toJson(ErrorMessage(400, "Malformed request body."))
+
+  val conflictMsg = toJson(ErrorMessage(409, "Duplicate key for vendor."))
 }
