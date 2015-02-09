@@ -15,8 +15,6 @@
  */
 package support
 
-import support.World._
-
 import scalaj.http.Http._
 import scalaj.http.{Http => HttpClient, HttpException, HttpOptions}
 
