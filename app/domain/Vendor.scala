@@ -26,7 +26,9 @@ trait VendorPersistence {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  lazy val collection: JSONCollection = db.collection[JSONCollection]("vendors")
+  val collName = "vendors"
+
+  lazy val collection: JSONCollection = db.collection[JSONCollection](collName)
 
   def persist(v: Vendor): Future[LastError] = collection.insert(v)
 

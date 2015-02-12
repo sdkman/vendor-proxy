@@ -11,7 +11,8 @@ import utils.{ErrorMarshalling, VendorMarshalling}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object Vendors extends Controller with MongoController with VendorPersistence with VendorMarshalling with ErrorMarshalling {
+object Vendors extends Controller with MongoController with VendorPersistence
+  with VendorMarshalling with ErrorMarshalling {
 
   def create = Authorised(parse.json) { req =>
     req.body.validate[Request].asOpt.fold(Future(BadRequest(badRequestMsg))) { vendorReq =>
