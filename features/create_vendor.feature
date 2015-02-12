@@ -54,4 +54,4 @@ Feature: Create Vendor
     """
     Then the returned status is "CONFLICT"
     And the payload contains a statusCode of value 409
-    And the payload contains message "Duplicate key for vendor: Groovy"
+    And the payload contains message "Duplicate key for vendor: groovy"

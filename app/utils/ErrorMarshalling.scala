@@ -14,7 +14,7 @@ trait ErrorMarshalling {
   
   val badRequestMsg = toJson(ErrorMessage(400, "Malformed request body."))
 
-  def conflictMsg(vendor: String) = toJson(ErrorMessage(409, s"Duplicate key for vendor: ${vendor.capitalize}"))
+  def conflictMsg(vendor: String) = toJson(ErrorMessage(409, s"Duplicate key for vendor: ${vendor}"))
 
   val internalServerErrorMsg = toJson(ErrorMessage(500, "Internal Server Error"))
 }
