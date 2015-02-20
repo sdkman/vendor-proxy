@@ -1,3 +1,4 @@
+@vendor
 Feature: Create Vendor
 
   Scenario: A Vendor is assigned an Access Key and Access Token

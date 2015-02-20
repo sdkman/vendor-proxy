@@ -22,11 +22,11 @@ object Http {
 
   val host = "http://localhost:9000"
 
-  def get(endpoint: String, token: String): (Int, String) = {
+  def get(endpoint: String, tokenHeader: (String, String)): (Int, String) = {
     handle {
       HttpClient(s"$host$endpoint")
         .headers(
-          "admin_token" -> token,
+          tokenHeader,
           "Accept" -> "application/json",
           "Content-Type" -> "application/json")
         .option(HttpOptions.connTimeout(1000))
@@ -34,11 +34,11 @@ object Http {
     }
   }
 
-  def postJson(endpoint: String, json: String, token: String): (Int, String) = {
+  def postJson(endpoint: String, json: String, tokenHeader: (String, String)): (Int, String) = {
     handle {
       HttpClient.postData(s"$host$endpoint", json)
         .headers(
-          "admin_token" -> token,
+          tokenHeader,
           "Accept" -> "application/json",
           "Content-Type" -> "application/json"
         )
@@ -47,12 +47,12 @@ object Http {
     }
   }
 
-  def putJson(endpoint: String, json: String, token: String): (Int, String) = {
+  def putJson(endpoint: String, json: String, tokenHeader: (String, String)): (Int, String) = {
     handle {
       HttpClient.postData(s"$host$endpoint", json)
         .method("PUT")
         .headers(
-          "admin_token" -> token,
+          tokenHeader,
           "Accept" -> "application/json",
           "Content-Type" -> "application/json"
         )

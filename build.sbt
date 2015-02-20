@@ -13,7 +13,8 @@ libraryDependencies ++= Seq(
   "info.cukes" %% "cucumber-scala" % "1.1.8" % "test",
   "info.cukes" % "cucumber-junit" % "1.1.8" % "test",
   "org.scalaj" %% "scalaj-http" % "0.3.16" % "test",
-  "org.mongodb" %% "casbah" % "2.7.3" % "test"
+  "org.mongodb" %% "casbah" % "2.7.3" % "test",
+  "com.github.tomakehurst" % "wiremock" % "1.53"
 )
 
 unmanagedResourceDirectories in Test <+= baseDirectory( _ / "features" )

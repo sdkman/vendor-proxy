@@ -11,26 +11,20 @@ class VendorSteps extends ScalaDsl with EN with ShouldMatchers with VendorMarsha
 
   val ConsumerTokenPattern = """^[a-f0-9]{64}$""".r
 
-  val statusCodes = Map("CREATED" -> 201, "BAD_REQUEST" -> 400, "FORBIDDEN" -> 403, "CONFLICT" -> 409)
-
-  Before() { scenario =>
-    coll = Mongo.createCollection(mongo, "vendors")
+  Before("@vendor") { scenario =>
+    vendorsColl = Mongo.createCollection(mongo, "vendors")
   }
   
-  After() { scenario =>
-    Mongo.dropCollection(coll)
+  After("@vendor") { scenario =>
+    Mongo.dropCollection(vendorsColl)
   }
   
   Given( """^the Admin Token "(.*?)" is presented$""") { (token: String) =>
     World.adminToken = token
   }
 
-  Given("""^an Environment Variable "(.*)"$"""){ (envVar: String) =>
-    System.getenv("ADMIN_TOKEN") shouldBe envVar
-  }
-
   When("""^the Create Vendor endpoint "(.*)" is posted a request:$"""){ (endpoint: String, json: String) =>
-    val (rc, rb) = Http.postJson(endpoint, json.stripMargin, adminToken)
+    val (rc, rb) = Http.postJson(endpoint, json.stripMargin, "admin_token" -> adminToken)
     World.responseCode = rc
     World.responseBody = rb
   }
@@ -66,18 +60,18 @@ class VendorSteps extends ScalaDsl with EN with ShouldMatchers with VendorMarsha
   }
   
   Then("""the vendor "(.*)" has been persisted"""){ (vendor: String) =>
-    Mongo.vendorExists(coll, "groovy")
+    Mongo.vendorExists(vendorsColl, "groovy")
   }
 
   Then("""the persisted vendor "(.*)" has consumerKey "(.*)""""){ (vendor: String, consumerKey: String) =>
-    Mongo.vendorConsumerKey(coll, vendor) match {
+    Mongo.vendorConsumerKey(vendorsColl, vendor) match {
       case Some(key) => key shouldBe consumerKey
       case None => fail("no vendor found")
     }
   }
 
   Then("""the persisted vendor "(.*)" has a valid consumerToken"""){ (vendor: String) =>
-    Mongo.vendorConsumerToken(coll, vendor) match {
+    Mongo.vendorConsumerToken(vendorsColl, vendor) match {
       case Some(token) => token should fullyMatch regex ConsumerTokenPattern
       case None => fail("no vendor found")
     }
