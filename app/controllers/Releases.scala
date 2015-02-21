@@ -19,7 +19,7 @@ object Releases extends Controller with ResponseTransformation with SecuredEndpo
     request.body.validate[ReleaseRequest].asOpt.fold {
       Future(BadRequest(customJson(400, "Malformed JSON payload")))
     } { release =>
-      WS.url(apiUrl).withHeaders(accessToken).post(toJson(release)).map(transform(_))
+      WS.url(apiUrl).withHeaders(accessToken).post(toJson(release)).map(transform)
     }
   }
 }

@@ -9,13 +9,13 @@ import play.api.mvc.Result
 
 trait ResponseTransformation {
 
-  def transform(implicit response: WSResponse): Result = {
+  def transform(response: WSResponse): Result = {
     response.status match {
-      case 200 => Ok(json)
-      case 201 => Created(json)
-      case 400 => BadRequest(json)
-      case 403 => Forbidden(json)
-      case 409 => Conflict(json)
+      case 200 => Ok(json(response))
+      case 201 => Created(json(response))
+      case 400 => BadRequest(json(response))
+      case 403 => Forbidden(json(response))
+      case 409 => Conflict(json(response))
       case 500 => InternalServerError(customJson(500, "Internal Server Error"))
       case _ => NotImplemented(customJson(501, "NotImplemented"))
     }
@@ -23,7 +23,7 @@ trait ResponseTransformation {
 
   implicit val writes = Json.writes[ApiResponse]
 
-  def json(implicit response: WSResponse) = toJson(
+  def json(response: WSResponse) = toJson(
     ApiResponse(
       status = response.status,
       id = (response.json \ "id").asOpt[String],
