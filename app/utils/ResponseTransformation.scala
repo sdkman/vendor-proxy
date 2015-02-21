@@ -1,7 +1,6 @@
 package utils
 
 import controllers.Releases._
-import domain.ApiResponse
 import play.api.libs.json.Json
 import play.api.libs.json.Json._
 import play.api.libs.ws.WSResponse
@@ -20,6 +19,8 @@ trait ResponseTransformation {
       case _ => NotImplemented(customJson(501, "NotImplemented"))
     }
   }
+
+  case class ApiResponse(status: Int, id: Option[String], message: String)
 
   implicit val writes = Json.writes[ApiResponse]
 

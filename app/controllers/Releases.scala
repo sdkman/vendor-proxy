@@ -1,7 +1,7 @@
 package controllers
 
-import domain.ReleaseRequest
 import play.api.Play._
+import play.api.libs.json.Json
 import play.api.libs.json.Json.toJson
 import play.api.libs.ws.WS
 import play.api.mvc.{Action, BodyParsers, Controller}
@@ -10,6 +10,16 @@ import utils.ResponseTransformation
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
+case class ReleaseRequest(candidate: String, version: String, url: String)
+
+object ReleaseRequest {
+
+  implicit val releaseRequestReads = Json.reads[ReleaseRequest]
+
+  implicit val releaseRequestWrites = Json.writes[ReleaseRequest]
+
+}
 
 object Releases extends Controller with ResponseTransformation with SecuredEndpoint {
 
