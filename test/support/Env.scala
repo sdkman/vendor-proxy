@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
 import cucumber.api.scala.ScalaDsl
+import support.World._
 
 object Env extends ScalaDsl {
 
@@ -16,8 +17,13 @@ object Env extends ScalaDsl {
   wireMockServer.start()
   WireMock.configureFor(SERVICE_UP_HOST, SERVICE_UP_PORT)
 
-  After() { scenario =>
+  Before() { scenario =>
+    vendorsColl = Mongo.createCollection(mongo, "vendors")
     WireMock.reset()
+  }
+
+  After() { scenario =>
+    Mongo.dropCollection(vendorsColl)
   }
 
 }

@@ -11,20 +11,12 @@ class VendorSteps extends ScalaDsl with EN with ShouldMatchers with VendorMarsha
 
   val ConsumerTokenPattern = """^[a-f0-9]{64}$""".r
 
-  Before("@vendor") { scenario =>
-    vendorsColl = Mongo.createCollection(mongo, "vendors")
-  }
-  
-  After("@vendor") { scenario =>
-    Mongo.dropCollection(vendorsColl)
-  }
-  
   Given( """^the Admin Token "(.*?)" is presented$""") { (token: String) =>
     World.adminToken = token
   }
 
   When("""^the Create Vendor endpoint "(.*)" is posted a request:$"""){ (endpoint: String, json: String) =>
-    val (rc, rb) = Http.postJson(endpoint, json.stripMargin, "admin_token" -> adminToken)
+    val (rc, rb) = Http.postJson(endpoint, json.stripMargin)(Map("admin_token" -> adminToken))
     World.responseCode = rc
     World.responseBody = rb
   }

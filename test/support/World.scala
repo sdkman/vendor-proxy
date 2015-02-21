@@ -4,6 +4,8 @@ import com.mongodb.casbah.MongoCollection
 
 object World {
 
+  Env.init()
+
   val statusCodes = Map(
     "CREATED" -> 201,
     "BAD_REQUEST" -> 400,
@@ -18,7 +20,9 @@ object World {
 
   var adminToken: String = "invalid"
 
-  var accessToken: String = "invalid"
+  var consumerKey: String = "invalid"
+
+  var consumerToken: String = "invalid"
 
   var responseCode = 0
 

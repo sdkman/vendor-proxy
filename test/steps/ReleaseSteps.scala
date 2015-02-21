@@ -1,30 +1,21 @@
 package steps
 
 import com.github.tomakehurst.wiremock.client.WireMock
-import cucumber.api.PendingException
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.ShouldMatchers
 import play.api.libs.json.Json
-import support.{Env, Http}
+import support.Http
 import support.World._
 
 class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
-
-  Before() { s =>
-    Env.init()
-  }
-
-  After() { s =>
-    WireMock.reset()
-  }
 
   When("""the remote release service is unavailable""") { () =>
     //nothing to do
   }
 
   When("""^posting JSON on the "(.*?)" endpoint:$"""){ (endpoint: String, payload: String) =>
-    val secureHeader = "access_token" -> accessToken
-    val (rc, rb) = Http.postJson(endpoint, payload.stripMargin, secureHeader)
+    val headers = Map("consumer_key" -> consumerKey, "consumer_token" -> consumerToken)
+    val (rc, rb) = Http.postJson(endpoint, payload.stripMargin)(headers)
     responseCode = rc
     responseBody = rb
   }

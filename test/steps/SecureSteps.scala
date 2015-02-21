@@ -20,7 +20,11 @@ class SecureSteps extends ScalaDsl with EN with ShouldMatchers with ScalaFutures
     Mongo.saveVendor(vendorsColl, vendor, token)
   }
 
+  Given("""^the Consumer Key "(.*?)" is presented$"""){ (key:String) =>
+    World.consumerKey = key
+  }
+
   Given("""^the Consumer Token "(.*?)" is presented$"""){ (token:String) =>
-    World.accessToken = token
+    World.consumerToken = token
   }
 }

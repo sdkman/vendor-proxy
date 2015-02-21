@@ -22,44 +22,14 @@ object Http {
 
   val host = "http://localhost:9000"
 
-  def get(endpoint: String, tokenHeader: (String, String)): (Int, String) = {
-    handle {
-      HttpClient(s"$host$endpoint")
-        .headers(
-          tokenHeader,
-          "Accept" -> "application/json",
-          "Content-Type" -> "application/json")
-        .option(HttpOptions.connTimeout(1000))
-        .option(HttpOptions.readTimeout(5000))
-    }
-  }
+  def get(endpoint: String)(implicit headers: Map[String, String]): (Int, String) =
+    handle(operation(HttpClient.get(s"$host$endpoint")))
 
-  def postJson(endpoint: String, json: String, tokenHeader: (String, String)): (Int, String) = {
-    handle {
-      HttpClient.postData(s"$host$endpoint", json)
-        .headers(
-          tokenHeader,
-          "Accept" -> "application/json",
-          "Content-Type" -> "application/json"
-        )
-        .option(HttpOptions.connTimeout(1000))
-        .option(HttpOptions.readTimeout(5000))
-    }
-  }
+  def postJson(endpoint: String, json: String)(implicit headers: Map[String, String]): (Int, String) =
+    handle(operation(HttpClient.postData(s"$host$endpoint", json)))
 
-  def putJson(endpoint: String, json: String, tokenHeader: (String, String)): (Int, String) = {
-    handle {
-      HttpClient.postData(s"$host$endpoint", json)
-        .method("PUT")
-        .headers(
-          tokenHeader,
-          "Accept" -> "application/json",
-          "Content-Type" -> "application/json"
-        )
-        .option(HttpOptions.connTimeout(1000))
-        .option(HttpOptions.readTimeout(5000))
-    }
-  }
+  def putJson(endpoint: String, json: String)(implicit headers: Map[String, String]): (Int, String) =
+    handle(operation(HttpClient.postData(s"$host$endpoint", json).method("PUT")))
 
   private def handle(request: Request): (Int, String) = {
     //nasty scalaj hack prevents multiple posts
@@ -73,4 +43,14 @@ object Http {
       }
     }
   }
+
+  private def operation(request: Request)(implicit headers: Map[String, String]): Request =
+    request
+      .headers(
+        headers
+          .updated("Accept", "application/json")
+          .updated("Content-Type", "application/json"))
+      .option(HttpOptions.connTimeout(10000))
+      .option(HttpOptions.readTimeout(10000))
+
 }

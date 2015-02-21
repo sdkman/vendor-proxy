@@ -1,10 +1,11 @@
   Feature: Proxy the Release API
 
   Background:
-    Given a the Vendor "groovy" with Consumer Token "xnByL5HUXslSA"
+    Given a the Vendor "groovy" with Consumer Token "e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368"
 
   Scenario: Client successfully Releases a new Version
-    Given the Consumer Token "xnByL5HUXslSA" is presented
+    Given the Consumer Key "5f202e7ab75f00af194c61cc07ae6b0c" is presented
+    And the Consumer Token "e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368" is presented
     And the remote release service returns a "CREATED" response:
     """
           |{
@@ -33,7 +34,8 @@
 
   @pending
   Scenario: Client is denied access to Release due to invalid Consumer Key
-    Given the Consumer Token "invalid_token" is presented
+    Given the Consumer Key "invalid_key" is presented
+    And the Consumer Token "e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368" is presented
     When posting JSON on the "/release" endpoint:
     """
           |{
@@ -52,10 +54,29 @@
     """
 
   @pending
-  Scenario: Client is denied access to Release due to invalid Consumer Secret
+  Scenario: Client is denied access to Release due to invalid Consumer Token
+    Given the Consumer Key "5f202e7ab75f00af194c61cc07ae6b0c" is presented
+    And the Consumer Token "invalid_token" is presented
+    When posting JSON on the "/release" endpoint:
+    """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |}
+    """
+    Then the status received is "FORBIDDEN"
+    And the response is:
+    """
+          |{
+          |  "status": 403,
+          |  "message": "Forbidden"
+          |}
+    """
 
   Scenario: Client fails Release due to Conflict with existing Version
-    Given the Consumer Token "xnByL5HUXslSA" is presented
+    Given the Consumer Key "5f202e7ab75f00af194c61cc07ae6b0c" is presented
+    And the Consumer Token "e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368" is presented
     And the remote release service returns a "CONFLICT" response:
     """
           |{
@@ -81,7 +102,8 @@
     """
 
   Scenario: Client fails Release due to Bad Request
-    Given the Consumer Token "xnByL5HUXslSA" is presented
+    Given the Consumer Key "5f202e7ab75f00af194c61cc07ae6b0c" is presented
+    And the Consumer Token "e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368" is presented
     And the remote release service returns a "BAD_REQUEST" response:
     """
           |{
@@ -107,7 +129,8 @@
     """
 
   Scenario: Client fails Release due to remote Internal Server Error
-    Given the Consumer Token "xnByL5HUXslSA" is presented
+    Given the Consumer Key "5f202e7ab75f00af194c61cc07ae6b0c" is presented
+    And the Consumer Token "e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368" is presented
     And the remote release service returns a "INTERNAL_SERVER_ERROR" response:
     """
           |{
@@ -133,7 +156,8 @@
     """
 
   Scenario: Bad Gateway because Release Access Token incorrectly configured
-    Given the Consumer Token "xnByL5HUXslSA" is presented
+    Given the Consumer Key "5f202e7ab75f00af194c61cc07ae6b0c" is presented
+    And the Consumer Token "e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368" is presented
     And the remote release service returns a "FORBIDDEN" response:
     """
           |{
@@ -159,7 +183,8 @@
     """
 
   Scenario: Bad Gateway when Release API URL incorrectly configured
-    Given the Consumer Token "xnByL5HUXslSA" is presented
+    Given the Consumer Key "5f202e7ab75f00af194c61cc07ae6b0c" is presented
+    And the Consumer Token "e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368" is presented
     And the remote release service is unavailable
     When posting JSON on the "/release" endpoint:
     """
