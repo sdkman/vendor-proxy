@@ -14,8 +14,12 @@ class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
     Env.init()
   }
 
-  And("""a Release microservice to proxy""") { () =>
-    throw new PendingException("pow")
+  After() { s =>
+    WireMock.reset()
+  }
+
+  When("""the remote release service is unavailable""") { () =>
+    //nothing to do
   }
 
   When("""^posting JSON on the "(.*?)" endpoint:$"""){ (endpoint: String, payload: String) =>

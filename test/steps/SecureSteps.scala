@@ -16,11 +16,11 @@ class SecureSteps extends ScalaDsl with EN with ShouldMatchers with ScalaFutures
     Mongo.dropCollection(vendorsColl)
   }
 
-  Given( """^a the Vendor "(.*?)" with Access Token "(.*?)"$"""){ (vendor: String, token: String) =>
+  Given( """^a the Vendor "(.*?)" with Consumer Token "(.*?)"$"""){ (vendor: String, token: String) =>
     Mongo.saveVendor(vendorsColl, vendor, token)
   }
 
-  Given("""^the Access Token "(.*?)" is presented$"""){ (token:String) =>
+  Given("""^the Consumer Token "(.*?)" is presented$"""){ (token:String) =>
     World.accessToken = token
   }
 }
