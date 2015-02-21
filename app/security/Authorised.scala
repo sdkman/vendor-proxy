@@ -10,8 +10,6 @@ import scala.concurrent.Future
 
 object Authorised extends ErrorMarshalling {
 
-  def apply()(f: Request[AnyContent] => Future[Result]) = Action.async(secured(f))
-  
   def apply(parser: BodyParser[JsValue])(f: Request[JsValue] => Future[Result]) = Action.async(parser)(secured(f))
   
   private def secured[T](f: Request[T] => Future[Result]) = { req: Request[T] =>

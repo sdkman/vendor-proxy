@@ -13,11 +13,7 @@ case class Vendor(_id: String, name: String, token: String)
 object Vendor {
   implicit val userFormat = Json.format[Vendor]
 
-  def fromName(name: String): Vendor =
-    Vendor(
-      _id = generateConsumerKey(name),
-      name = name,
-      token = generateSHAToken(name))
+  def fromName(name: String): Vendor = Vendor(_id = generateConsumerKey(name), name = name, token = generateSHAToken(name))
 }
 
 trait VendorPersistence {
