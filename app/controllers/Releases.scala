@@ -4,7 +4,8 @@ import play.api.Play._
 import play.api.libs.json.Json
 import play.api.libs.json.Json.toJson
 import play.api.libs.ws.WS
-import play.api.mvc.{Action, BodyParsers, Controller}
+import play.api.mvc.Controller
+import security.AsVendor
 import utils.{Environment, ResponseTransformation}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -24,10 +25,8 @@ object Releases extends Controller with ResponseTransformation with Environment 
 
   def tokenHeader = "access_token" -> releaseAccessToken
 
-  def create = Action.async(BodyParsers.parse.json) { request =>
-    request.body.validate[ReleaseRequest].asOpt.fold {
-      Future(BadRequest(customJson(400, "Malformed JSON payload")))
-    } { release =>
+  def create = AsVendor(parse.json) { request =>
+    request.body.validate[ReleaseRequest].asOpt.fold(Future(badRequest)){ release =>
       WS.url(releaseApiUrl).withHeaders(tokenHeader).post(toJson(release)).map(transform)
     }
   }

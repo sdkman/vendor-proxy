@@ -1,5 +1,6 @@
 package steps
 
+import com.github.tomakehurst.wiremock.client.WireMock
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.ShouldMatchers
 import org.scalatest.concurrent.ScalaFutures
@@ -14,6 +15,7 @@ class SecureSteps extends ScalaDsl with EN with ShouldMatchers with ScalaFutures
 
   After() { scenario =>
     Mongo.dropCollection(vendorsColl)
+    WireMock.reset()
   }
 
   Given( """^a the Vendor "(.*?)" with Consumer Token "(.*?)"$"""){ (vendor: String, token: String) =>

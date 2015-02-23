@@ -16,14 +16,4 @@ object Env extends ScalaDsl {
   val wireMockServer = new WireMockServer(wireMockConfig().port(SERVICE_UP_PORT))
   wireMockServer.start()
   WireMock.configureFor(SERVICE_UP_HOST, SERVICE_UP_PORT)
-
-  Before() { scenario =>
-    vendorsColl = Mongo.createCollection(mongo, "vendors")
-    WireMock.reset()
-  }
-
-  After() { scenario =>
-    Mongo.dropCollection(vendorsColl)
-  }
-
 }

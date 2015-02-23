@@ -4,7 +4,7 @@ import play.api.libs.json.Json
 import play.api.libs.json.Json._
 
 trait ErrorMarshalling {
-  case class ErrorMessage(statusCode: Int, message: String)
+  case class ErrorMessage(status: Int, message: String)
 
   implicit val errorMessageWrites = Json.writes[ErrorMessage]
 

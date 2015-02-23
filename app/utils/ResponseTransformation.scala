@@ -36,4 +36,7 @@ trait ResponseTransformation {
       id = None,
       message = message))
 
+
+  def badRequest = BadRequest(customJson(400, "Malformed JSON payload"))
+
 }

@@ -5,7 +5,7 @@ import play.api.libs.json.Json.toJson
 import play.api.mvc._
 import play.modules.reactivemongo.MongoController
 import reactivemongo.core.commands.LastError
-import security.Authorised
+import security.AsAdministrator
 import utils.{ErrorMarshalling, VendorMarshalling}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -14,7 +14,7 @@ import scala.concurrent.Future
 object Vendors extends Controller with MongoController with VendorPersistence
   with VendorMarshalling with ErrorMarshalling {
 
-  def create = Authorised(parse.json) { req =>
+  def create = AsAdministrator(parse.json) { req =>
     req.body.validate[Request].asOpt.fold(Future(BadRequest(badRequestMsg))) { vendorReq =>
       val vendor = Vendor.fromName(vendorReq.vendor)
       persist(vendor).map {

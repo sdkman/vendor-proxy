@@ -39,7 +39,7 @@ class VendorSteps extends ScalaDsl with EN with ShouldMatchers with VendorMarsha
 
   Then("""the payload contains a statusCode of value (.*)"""){ (status: Int) =>
     Json.parse(responseBody).validate[ErrorMessage].asOpt match {
-      case Some(actual) => actual.statusCode shouldBe status
+      case Some(actual) => actual.status shouldBe status
       case None => fail("No valid status code found.")
     }
   }

@@ -32,7 +32,6 @@
           |}
     """
 
-  @pending
   Scenario: Client is denied access to Release due to invalid Consumer Key
     Given the Consumer Key "invalid_key" is presented
     And the Consumer Token "e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368" is presented
@@ -49,11 +48,10 @@
     """
           |{
           |  "status": 403,
-          |  "message": "Forbidden"
+          |  "message": "Not authorised to use this service."
           |}
     """
 
-  @pending
   Scenario: Client is denied access to Release due to invalid Consumer Token
     Given the Consumer Key "5f202e7ab75f00af194c61cc07ae6b0c" is presented
     And the Consumer Token "invalid_token" is presented
@@ -70,7 +68,7 @@
     """
           |{
           |  "status": 403,
-          |  "message": "Forbidden"
+          |  "message": "Not authorised to use this service."
           |}
     """
 

@@ -16,7 +16,7 @@
 package support
 
 import com.mongodb.casbah.Imports._
-import utils.TokenGenerator.generateMD5Token
+import utils.TokenGenerator.generateConsumerKey
 
 object Mongo {
 
@@ -38,6 +38,6 @@ object Mongo {
     coll.findOne(MongoDBObject("name" -> vendor)).map(v => v.getAs[String]("token").get)
   
   def saveVendor(coll: MongoCollection, name: String, token: String) =
-    coll.save(MongoDBObject("_id" -> generateMD5Token(name), "token" -> token, "name" -> name))
+    coll.save(MongoDBObject("_id" -> generateConsumerKey(name), "token" -> token, "name" -> name))
 
 }
