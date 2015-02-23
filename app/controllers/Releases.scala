@@ -25,7 +25,7 @@ object Releases extends Controller with ResponseTransformation with Environment 
 
   def tokenHeader = "access_token" -> releaseAccessToken
 
-  def create = AsVendor(parse.json) { request =>
+  def release = AsVendor(parse.json) { request =>
     request.body.validate[ReleaseRequest].asOpt.fold(Future(badRequest)){ release =>
       WS.url(releaseApiUrl).withHeaders(tokenHeader).post(toJson(release)).map(transform)
     }
