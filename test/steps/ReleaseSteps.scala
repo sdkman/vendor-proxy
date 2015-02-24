@@ -47,7 +47,7 @@ class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
   Then("""^the remote release service expects payload:$"""){ (payload: String) =>
     import WireMock._
     verify(postRequestedFor(urlEqualTo("/release"))
-      .withHeader("access_token", equalTo("release_token"))
+      .withHeader("access_token", equalTo("default_token"))
       .withRequestBody(equalToJson(payload.stripMargin))
     )
   }

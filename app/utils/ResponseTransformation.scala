@@ -1,6 +1,6 @@
 package utils
 
-import controllers.Releases._
+import controllers.Proxy._
 import play.api.libs.json.Json
 import play.api.libs.json.Json._
 import play.api.libs.ws.WSResponse

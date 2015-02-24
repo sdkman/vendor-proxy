@@ -1,9 +1,16 @@
 package utils
 
+import play.api.Play
+import play.api.Play.current
+
 trait Environment {
 
-  def releaseApiUrl = Option(System.getenv("RELEASE_API_URL")).getOrElse("http://localhost:8080/release")
+  def apiUrl(service: String) =
+    Play.application.configuration.getString(s"services.$service.url").getOrElse("invalid")
 
-  def releaseAccessToken = Option(System.getenv("RELEASE_ACCESS_TOKEN")).getOrElse("release_token")
+  def tokenHeader(service: String) = "access_token" -> accessToken(service)
+
+  private def accessToken(service: String) =
+    Play.application.configuration.getString(s"services.$service.accessToken").getOrElse("invalid")
   
 }
