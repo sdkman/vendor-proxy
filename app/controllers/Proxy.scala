@@ -10,11 +10,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 object Proxy extends Controller with ResponseTransformation with Environment {
 
-  def post = AsVendor(parse.json) { request =>
+  def execute = AsVendor(parse.json) { request =>
     val service = request.path.substring(1)
     WS.url(apiUrl(service))
       .withHeaders(tokenHeader(service))
-      .post(request.body)
+      .withMethod(request.method)
+      .withBody(request.body)
+      .execute()
       .map(transform)
   }
 }

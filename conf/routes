@@ -3,4 +3,4 @@
 # ~~~~
 
 POST    /vendors/create             controllers.Vendors.create
-POST    /release                    controllers.Proxy.post
+POST    /release                    controllers.Proxy.execute
