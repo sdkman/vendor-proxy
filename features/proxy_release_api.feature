@@ -31,6 +31,14 @@
           |  "message": "released groovy version: 2.3.6"
           |}
     """
+    And the remote release service expects payload:
+    """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |}
+    """
 
   Scenario: Client is denied access to Release due to invalid Consumer Key
     Given the Consumer Key "invalid_key" is presented
@@ -51,6 +59,7 @@
           |  "message": "Not authorised to use this service."
           |}
     """
+    And the remote release service expects NO posts
 
   Scenario: Client is denied access to Release due to invalid Consumer Token
     Given the Consumer Key "5f202e7ab75f00af194c61cc07ae6b0c" is presented
@@ -71,6 +80,7 @@
           |  "message": "Not authorised to use this service."
           |}
     """
+    And the remote release service expects NO posts
 
   Scenario: Client fails Release due to Conflict with existing Version
     Given the Consumer Key "5f202e7ab75f00af194c61cc07ae6b0c" is presented
@@ -98,6 +108,14 @@
           |  "message": "duplicate candidate version: groovy 2.3.6"
           |}
     """
+    And the remote release service expects payload:
+    """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |}
+    """
 
   Scenario: Client fails Release due to remote Internal Server Error
     Given the Consumer Key "5f202e7ab75f00af194c61cc07ae6b0c" is presented
@@ -123,6 +141,14 @@
           |{
           |  "status": 500,
           |  "message": "Internal Server Error"
+          |}
+    """
+    And the remote release service expects payload:
+      """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
 
