@@ -99,33 +99,6 @@
           |}
     """
 
-  Scenario: Client fails Release due to Bad Request
-    Given the Consumer Key "5f202e7ab75f00af194c61cc07ae6b0c" is presented
-    And the Consumer Token "e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368" is presented
-    And the remote release service returns a "BAD_REQUEST" response:
-    """
-          |{
-          |  "status": 400,
-          |  "message": "Could not read JSON: Unrecognized field \"cand\" (class net.gvmtool.release.request.ReleaseRequest), not marked as ignorable (3 known properties: \"version\", \"candidate\", \"url\"])\ at [Source: org.apache.catalina.connector.CoyoteInputStream@31e3c705; line: 1, column: 62] (through reference chain: net.gvmtool.release.request.ReleaseRequest[\"cand\"]); nested exception is com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field \"cand\" (class net.gvmtool.release.request.ReleaseRequest), not marked as ignorable (3 known properties: \"version\", \"candidate\", \"url\"])\ at [Source: org.apache.catalina.connector.CoyoteInputStream@31e3c705; line: 1, column: 62] (through reference chain: net.gvmtool.release.request.ReleaseRequest[\"cand\"])"
-          |}
-    """
-    When posting JSON on the "/release" endpoint:
-    """
-          |{
-          |  "cand" : "groovy",
-          |  "ver" : "2.3.6",
-          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
-          |}
-    """
-    Then the status received is "BAD_REQUEST"
-    And the response is:
-    """
-          |{
-          |  "status": 400,
-          |  "message": "Malformed JSON payload"
-          |}
-    """
-
   Scenario: Client fails Release due to remote Internal Server Error
     Given the Consumer Key "5f202e7ab75f00af194c61cc07ae6b0c" is presented
     And the Consumer Token "e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368" is presented
