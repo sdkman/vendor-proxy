@@ -37,7 +37,7 @@ class VendorSteps extends ScalaDsl with EN with ShouldMatchers with VendorMarsha
     actual.consumerToken should fullyMatch regex ConsumerTokenPattern
   }
 
-  Then("""the payload contains a statusCode of value (.*)"""){ (status: Int) =>
+  Then("""the payload contains a status of value (.*)"""){ (status: Int) =>
     Json.parse(responseBody).validate[ErrorMessage].asOpt match {
       case Some(actual) => actual.status shouldBe status
       case None => fail("No valid status code found.")

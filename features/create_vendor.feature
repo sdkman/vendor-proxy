@@ -18,7 +18,7 @@ Feature: Create Vendor
       |{ "vendor" : "groovy" }
     """
     Then the returned status is "FORBIDDEN"
-    And the payload contains a statusCode of value 403
+    And the payload contains a status of value 403
     And the payload contains message "Not authorised to use this service."
 
   Scenario: An invalid payload is submitted for Vendor Creation
@@ -28,7 +28,7 @@ Feature: Create Vendor
       |{ "rodnev" : "yvoorg" }
     """
     Then the returned status is "BAD_REQUEST"
-    And the payload contains a statusCode of value 400
+    And the payload contains a status of value 400
     And the payload contains message "Malformed request body."
 
   Scenario: Vendor details are persisted
@@ -54,5 +54,5 @@ Feature: Create Vendor
       |{ "vendor" : "groovy" }
     """
     Then the returned status is "CONFLICT"
-    And the payload contains a statusCode of value 409
+    And the payload contains a status of value 409
     And the payload contains message "Duplicate key for vendor: groovy"
