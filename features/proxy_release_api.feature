@@ -159,7 +159,7 @@
     """
           |{
           |  "status": 403,
-          |  "message": "Invalid consumer token provided."
+          |  "message": "Blah blah blah."
           |}
     """
     When posting JSON on the "/release" endpoint:
@@ -175,7 +175,7 @@
     """
           |{
           |  "status": 502,
-          |  "message": "Remote service unavailable"
+          |  "message": "Access Token invalid."
           |}
     """
 

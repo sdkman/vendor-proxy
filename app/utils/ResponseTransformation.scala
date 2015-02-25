@@ -13,7 +13,7 @@ trait ResponseTransformation {
       case 200 => Ok(json(response))
       case 201 => Created(json(response))
       case 400 => BadRequest(json(response))
-      case 403 => BadGateway(customJson(502, "Remote service unavailable"))
+      case 403 => BadGateway(customJson(502, "Access Token invalid."))
       case 409 => Conflict(json(response))
       case 500 => InternalServerError(customJson(500, "Internal Server Error"))
       case _ => BadGateway(customJson(502, "Remote service unavailable"))
