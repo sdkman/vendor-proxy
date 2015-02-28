@@ -4,4 +4,5 @@
 
 GET     /                           controllers.Root.index
 POST    /vendors/create             controllers.Vendors.create
-POST    /release                    controllers.Proxy.execute
+POST    /*service                   controllers.Proxy.execute(service: String)
+PUT     /*service                   controllers.Proxy.execute(service: String)

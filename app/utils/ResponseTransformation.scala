@@ -12,6 +12,7 @@ trait ResponseTransformation {
     response.status match {
       case 200 => Ok(json(response))
       case 201 => Created(json(response))
+      case 202 => Accepted(json(response))
       case 400 => BadRequest(json(response))
       case 403 => BadGateway(customJson(502, "Access Token invalid."))
       case 409 => Conflict(json(response))
