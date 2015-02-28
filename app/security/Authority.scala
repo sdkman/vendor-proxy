@@ -5,6 +5,7 @@ import play.api.libs.json.JsValue
 import play.api.mvc.Results._
 import play.api.mvc._
 import utils.ErrorMarshalling
+import utils.TokenGenerator.sha256
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -42,7 +43,7 @@ object AsVendor extends Authority with VendorPersistence {
   override def secured[T](fun: (Request[T]) => Future[Result]) = { req: Request[T] =>
     req.headers.get(consumerKeyHeaderName).fold(forbiddenF) { key =>
       req.headers.get(consumerTokenHeaderName).fold(forbiddenF) { token =>
-        findByKeyAndToken(key, token).flatMap { vendors =>
+        findByKeyAndToken(key, sha256(token)).flatMap { vendors =>
           if(vendors.nonEmpty) fun(req) else forbiddenF
         }
       }

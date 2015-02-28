@@ -74,4 +74,6 @@ object TokenGenerator {
     sha(tokenprefix + System.nanoTime() + generateToken(TOKEN_LENGTH))
 
   def generateConsumerKey(vendor: String): String = md5(vendor)
+
+  def sha256(token: String) = sha(token)
 }
