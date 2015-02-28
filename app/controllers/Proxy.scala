@@ -4,11 +4,11 @@ import play.api.Play._
 import play.api.libs.ws.WS
 import play.api.mvc.Controller
 import security.AsVendor
-import utils.{Environment, ResponseTransformation}
+import utils.Environment
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object Proxy extends Controller with ResponseTransformation with Environment {
+object Proxy extends Controller with Environment {
 
   def execute(service: String) = AsVendor(parse.json) { request =>
     WS.url(apiUrl(service))
@@ -16,6 +16,6 @@ object Proxy extends Controller with ResponseTransformation with Environment {
       .withMethod(request.method)
       .withBody(request.body)
       .execute()
-      .map(transform)
+      .map(response => Status(response.status)(response.body))
   }
 }

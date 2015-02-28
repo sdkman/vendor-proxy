@@ -170,12 +170,12 @@
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
-    Then the status received is "BAD_GATEWAY"
+    Then the status received is "FORBIDDEN"
     And the response is:
     """
           |{
-          |  "status": 502,
-          |  "message": "Access Token invalid."
+          |  "status": 403,
+          |  "message": "Blah blah blah."
           |}
     """
 
@@ -191,11 +191,4 @@
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
-    Then the status received is "BAD_GATEWAY"
-    And the response is:
-    """
-          |{
-          |  "status": 502,
-          |  "message": "Remote service unavailable"
-          |}
-    """
+    Then the status received is "NOT_FOUND"
