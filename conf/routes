@@ -3,6 +3,6 @@
 # ~~~~
 
 GET     /                           controllers.Root.index
-POST    /vendors/create             controllers.Vendors.create
+POST    /consumers                  controllers.Consumers.create
 POST    /*service                   controllers.Proxy.execute(service: String)
 PUT     /*service                   controllers.Proxy.execute(service: String)

@@ -11,16 +11,16 @@ import utils.TokenGenerator
 class SecureSteps extends ScalaDsl with EN with ShouldMatchers with ScalaFutures {
 
   Before() { scenario =>
-    vendorsColl = Mongo.createCollection(mongo, "vendors")
+    consumersColl = Mongo.createCollection(mongo, "consumers")
   }
 
   After() { scenario =>
-    Mongo.dropCollection(vendorsColl)
+    Mongo.dropCollection(consumersColl)
     WireMock.reset()
   }
 
-  Given( """^a the Vendor "(.*?)" with Consumer Token "(.*?)"$"""){ (vendor: String, token: String) =>
-    Mongo.saveVendor(vendorsColl, vendor, TokenGenerator.sha256(token))
+  Given( """^a the Consumer "(.*?)" with Consumer Token "(.*?)"$"""){ (consumer: String, token: String) =>
+    Mongo.saveConsumer(consumersColl, consumer, TokenGenerator.sha256(token))
   }
 
   Given("""^the Consumer Key "(.*?)" is presented$"""){ (key:String) =>

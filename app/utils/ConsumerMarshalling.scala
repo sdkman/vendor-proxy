@@ -2,8 +2,8 @@ package utils
 
 import play.api.libs.json.Json
 
-trait VendorMarshalling {
-  case class Request(vendor: String)
+trait ConsumerMarshalling {
+  case class Request(consumer: String)
 
   case class Response(consumerKey: String, consumerToken: String, name: String)
 

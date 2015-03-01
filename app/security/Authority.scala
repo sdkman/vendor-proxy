@@ -1,6 +1,6 @@
 package security
 
-import domain.VendorPersistence
+import domain.ConsumerPersistence
 import play.api.libs.json.JsValue
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -34,7 +34,7 @@ object AsAdministrator extends Authority {
   }
 }
 
-object AsVendor extends Authority with VendorPersistence {
+object AsConsumer extends Authority with ConsumerPersistence {
 
   val consumerKeyHeaderName = "consumer_key"
 
@@ -43,8 +43,8 @@ object AsVendor extends Authority with VendorPersistence {
   override def secured[T](fun: (Request[T]) => Future[Result]) = { req: Request[T] =>
     req.headers.get(consumerKeyHeaderName).fold(forbiddenF) { key =>
       req.headers.get(consumerTokenHeaderName).fold(forbiddenF) { token =>
-        findByKeyAndToken(key, sha256(token)).flatMap { vendors =>
-          if(vendors.nonEmpty) fun(req) else forbiddenF
+        findByKeyAndToken(key, sha256(token)).flatMap { consumers =>
+          if(consumers.nonEmpty) fun(req) else forbiddenF
         }
       }
     }

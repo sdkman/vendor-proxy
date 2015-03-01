@@ -1,6 +1,6 @@
 package domain
 
-import controllers.Vendors._
+import controllers.Consumers._
 import play.api.libs.json.Json
 import play.modules.reactivemongo.json.collection.JSONCollection
 import reactivemongo.bson.BSONDocument
@@ -9,36 +9,36 @@ import utils.TokenGenerator.{generateConsumerKey, generateSHAToken}
 
 import scala.concurrent.Future
 
-case class Vendor(_id: String, name: String, token: String)
+case class Consumer(_id: String, name: String, token: String)
 
-object Vendor {
-  implicit val vendorWrites = Json.writes[Vendor]
+object Consumer {
+  implicit val consumerWrites = Json.writes[Consumer]
 
-  def fromName(name: String): Vendor =
-    Vendor(_id = generateConsumerKey(name), name = name, token = generateSHAToken(name))
+  def fromName(name: String): Consumer =
+    Consumer(_id = generateConsumerKey(name), name = name, token = generateSHAToken(name))
 }
 
-trait VendorPersistence {
+trait ConsumerPersistence {
 
-  import domain.Vendor.vendorWrites
+  import domain.Consumer.consumerWrites
   import play.modules.reactivemongo.json.BSONFormats.BSONDocumentFormat
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  val collName = "vendors"
+  val collName = "consumers"
 
   lazy val collection: JSONCollection = db.collection[JSONCollection](collName)
 
-  def persist(v: Vendor): Future[LastError] = collection.insert(v)
+  def persist(v: Consumer): Future[LastError] = collection.insert(v)
 
   def findByKeyAndToken(key: String, token: String): Future[List[BSONDocument]] = {
     val query = BSONDocument("_id" -> key, "token" -> token)
     collection.find(query).cursor[BSONDocument].collect[List]()
   }
 
-  def succMsg(vendor: String) = s"Persisted $vendor"
+  def succMsg(consumer: String) = s"Persisted $consumer"
 
-  def errMsg(vendor: String) = s"Can not persist $vendor"
+  def errMsg(consumer: String) = s"Can not persist $consumer"
 
 }
 
-case class VendorPersistenceException(m: String) extends RuntimeException(m: String)
+case class ConsumerPersistenceException(m: String) extends RuntimeException(m: String)

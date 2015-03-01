@@ -28,16 +28,16 @@ object Mongo {
 
   def dropCollection(coll: MongoCollection) = coll.drop()
 
-  def vendorExists(coll: MongoCollection, vendor: String): Boolean =
-    coll.findOne(MongoDBObject("name" -> vendor)).isDefined
+  def consumerExists(coll: MongoCollection, consumer: String): Boolean =
+    coll.findOne(MongoDBObject("name" -> consumer)).isDefined
 
-  def vendorConsumerKey(coll: MongoCollection, vendor: String): Option[String] =
-    coll.findOne(MongoDBObject("name" -> vendor)).map(v => v.getAs[String]("_id").get)
+  def consumerConsumerKey(coll: MongoCollection, consumer: String): Option[String] =
+    coll.findOne(MongoDBObject("name" -> consumer)).map(v => v.getAs[String]("_id").get)
 
-  def vendorConsumerToken(coll: MongoCollection, vendor: String): Option[String] =
-    coll.findOne(MongoDBObject("name" -> vendor)).map(v => v.getAs[String]("token").get)
+  def consumerConsumerToken(coll: MongoCollection, consumer: String): Option[String] =
+    coll.findOne(MongoDBObject("name" -> consumer)).map(v => v.getAs[String]("token").get)
   
-  def saveVendor(coll: MongoCollection, name: String, token: String) =
+  def saveConsumer(coll: MongoCollection, name: String, token: String) =
     coll.save(MongoDBObject("_id" -> generateConsumerKey(name), "token" -> token, "name" -> name))
 
 }

@@ -5,9 +5,9 @@ import org.scalatest.ShouldMatchers
 import play.api.libs.json.Json
 import support.World.{responseBody, responseCode, _}
 import support.{Mongo, Http, World}
-import utils.{ErrorMarshalling, VendorMarshalling}
+import utils.{ErrorMarshalling, ConsumerMarshalling}
 
-class VendorSteps extends ScalaDsl with EN with ShouldMatchers with VendorMarshalling with ErrorMarshalling {
+class ConsumerSteps extends ScalaDsl with EN with ShouldMatchers with ConsumerMarshalling with ErrorMarshalling {
 
   val ConsumerTokenPattern = """^[a-f0-9]{64}$""".r
 
@@ -15,7 +15,7 @@ class VendorSteps extends ScalaDsl with EN with ShouldMatchers with VendorMarsha
     World.adminToken = token
   }
 
-  When("""^the Create Vendor endpoint "(.*)" is posted a request:$"""){ (endpoint: String, json: String) =>
+  When("""^the Create Consumer endpoint "(.*)" is posted a request:$"""){ (endpoint: String, json: String) =>
     val (rc, rb) = Http.postJson(endpoint, json.stripMargin)(Map("admin_token" -> adminToken))
     World.responseCode = rc
     World.responseBody = rb
@@ -51,21 +51,21 @@ class VendorSteps extends ScalaDsl with EN with ShouldMatchers with VendorMarsha
     }
   }
   
-  Then("""the vendor "(.*)" has been persisted"""){ (vendor: String) =>
-    Mongo.vendorExists(vendorsColl, "groovy")
+  Then("""the Consumer "(.*)" has been persisted"""){ (consumer: String) =>
+    Mongo.consumerExists(consumersColl, consumer)
   }
 
-  Then("""the persisted vendor "(.*)" has consumerKey "(.*)""""){ (vendor: String, consumerKey: String) =>
-    Mongo.vendorConsumerKey(vendorsColl, vendor) match {
+  Then("""the persisted Consumer "(.*)" has consumerKey "(.*)""""){ (consumer: String, consumerKey: String) =>
+    Mongo.consumerConsumerKey(consumersColl, consumer) match {
       case Some(key) => key shouldBe consumerKey
-      case None => fail("no vendor found")
+      case None => fail("no consumer found")
     }
   }
 
-  Then("""the persisted vendor "(.*)" has a valid consumerToken"""){ (vendor: String) =>
-    Mongo.vendorConsumerToken(vendorsColl, vendor) match {
+  Then("""the persisted Consumer "(.*)" has a valid consumerToken"""){ (consumer: String) =>
+    Mongo.consumerConsumerToken(consumersColl, consumer) match {
       case Some(token) => token should fullyMatch regex ConsumerTokenPattern
-      case None => fail("no vendor found")
+      case None => fail("no consumer found")
     }
   }
 

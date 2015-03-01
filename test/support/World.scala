@@ -17,7 +17,7 @@ object World {
 
   val mongo = Mongo.primeDatabase("gvm")
 
-  var vendorsColl: MongoCollection = _
+  var consumersColl: MongoCollection = _
 
   var adminToken: String = "invalid"
 
