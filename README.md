@@ -1,12 +1,17 @@
 ##Secure Proxy
 
-This microservice can be used to front and secure multiple other microservices.
+This microservice can be used to proxy and secure multiple other microservices. At the moment, the service provides lightweight Authentication, but not Authorisation.
+
+
+###Consumer Authentication
 
 It acts as a proxy, searching for the presence of two request headers:
 
-`consmer_key` : a unique identifier per consumer application
+`consmer_key` : a unique identifier per Consumer.
 
-`consumer_token` : a SHA-256 hash generated for the consumer
+`consumer_token` : a SHA-256 hash generated for the Consumer
+
+###Setting up Services to Proxy
 
 The application hinges on configuration to be set up in the `conf/application.conf` field. Here are some current examples as used by the GVM api:
 
@@ -29,17 +34,14 @@ The application hinges on configuration to be set up in the `conf/application.co
         accessToken = "default_token"
         accessToken = ${?BROADCAST_API_TOKEN}
       }
-      "announce/freeform" = {
-        url = "http://localhost:8081/announce/freeform"
-        url = ${?BROADCAST_FREEFORM_API_URL}
-        accessToken = "default_token"
-        accessToken = ${?BROADCAST_API_TOKEN}
-      }
     }
 
-In these configuration blocks per service, we have opted for using environment variables, although this is not a necessity. We have also provied default values for each environment variable.
+In these configuration blocks per service, we have opted for using environment variables, although this is not a necessity. We have also provied default values for each environment variable. Each configuratoin block also specifies an `accessToken` which will be propagated to the underlying microservice as an `access_token` request header. Provided your microservice communications use SSL, your microservices should be secure.
 
-And endpoint has also been provided for creating new consumers. This endpoint simply takes a JSON POST on '/consumer' of:
+
+###Creating new Consumers
+
+An endpoint has also been provided for creating new consumers. This endpoint simply takes a JSON POST on '/consumer' of:
 
     {"consumer": "groovy"}
 
@@ -51,6 +53,8 @@ and returns a JSON response:
       "name": "groovy"
     }
 
-Once this key and token have been obtained, they can be used to make subsequent calls to proxied endpoints. All these calls will require `consumer_key` and `consumer_token` headers to be set respectively for each call.
+The endpoint is itself secured, and looks for the presence of an `admin_token` request header. This value of this can be set by providing an `ADMIN_TOKEN` environment variable, which defaults to `default_token`.
 
-The service will automatically include an `access_token` header in calls that it makes to services that it proxies. 
+Once the Consumer Key and Token have been obtained, they can be used to make subsequent calls to proxied endpoints. All these calls will _require `consumer_key` and `consumer_token` headers to be set respectively for each call_.
+
+Give it a spin and feel free to raise issues and pull requests!
