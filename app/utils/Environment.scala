@@ -6,11 +6,17 @@ import play.api.Play.current
 trait Environment {
 
   def apiUrl(service: String) =
-    Play.application.configuration.getString(s"services.$service.url").getOrElse("invalid")
+    Play.application.configuration
+      .getString(s"services.$service.url")
+      .getOrElse("invalid")
 
   def tokenHeader(service: String) = "access_token" -> accessToken(service)
 
   private def accessToken(service: String) =
-    Play.application.configuration.getString(s"services.$service.accessToken").getOrElse("invalid")
-  
+    Play.application.configuration
+      .getString(s"services.$service.accessToken")
+      .getOrElse("invalid")
+
+  def secret = Option(System.getenv("ADMIN_TOKEN")).getOrElse("default_token")
+
 }

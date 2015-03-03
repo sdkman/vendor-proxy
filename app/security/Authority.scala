@@ -4,7 +4,7 @@ import domain.ConsumerPersistence
 import play.api.libs.json.JsValue
 import play.api.mvc.Results._
 import play.api.mvc._
-import utils.ErrorMarshalling
+import utils.{Environment, ErrorMarshalling}
 import utils.TokenGenerator.sha256
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -17,12 +17,10 @@ trait Authority extends ErrorMarshalling {
   def secured[T](f: Request[T] => Future[Result]): (Request[T]) => Future[Result]
 
   val forbiddenF = Future(Forbidden(forbiddenMsg))
-  
-  def secret = Option(System.getenv("ADMIN_TOKEN")).getOrElse("default_token")
 
 }
 
-object AsAdministrator extends Authority {
+object AsAdministrator extends Authority with Environment {
 
   val adminTokenHeaderName = "admin_token"
 
