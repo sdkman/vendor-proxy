@@ -1,6 +1,6 @@
 name := """security-proxy"""
 
-version := "1.0.0-SNAPSHOT"
+version := "1.0.2"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
