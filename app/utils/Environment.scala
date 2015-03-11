@@ -19,4 +19,6 @@ trait Environment {
 
   def secret = Option(System.getenv("ADMIN_TOKEN")).getOrElse("default_token")
 
+  def version = Play.application.configuration.getString("application.version").getOrElse("version not found")
+
 }
