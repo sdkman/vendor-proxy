@@ -15,8 +15,8 @@ git branch -D "$BRANCH"
 git checkout -b "$BRANCH"
 
 #update version
-sed -i "s/1.0.0-SNAPSHOT/$VERSION/g" build.sbt
-git add build.sbt
+sed -i "s/1.0.0-SNAPSHOT/$VERSION/g" conf/application.conf
+git add conf/application.conf
 git commit -m "Update version of $BRANCH to $VERSION"
 
 #push branch

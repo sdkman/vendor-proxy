@@ -1,6 +1,10 @@
-name := """security-proxy"""
+import com.typesafe.config._
 
-version := "1.0.0-SNAPSHOT"
+val conf = ConfigFactory.parseFile(new File("conf/application.conf")).resolve()
+
+version := conf.getString("application.version")
+
+name := """security-proxy"""
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
