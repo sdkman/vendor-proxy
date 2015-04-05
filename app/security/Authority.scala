@@ -20,13 +20,13 @@ trait Authority extends ErrorMarshalling {
 
 }
 
-object AsAdministrator extends Authority with Environment {
+object AsAdministrator extends Authority {
 
   val adminTokenHeaderName = "admin_token"
 
   override def secured[T](f: Request[T] => Future[Result]) = { req: Request[T] =>
     req.headers.get(adminTokenHeaderName).fold(forbiddenF) {
-      case s if s == secret => f(req)
+      case s if s == Environment.secret => f(req)
       case _ => forbiddenF
     }
   }

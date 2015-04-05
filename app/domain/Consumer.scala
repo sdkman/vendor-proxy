@@ -5,6 +5,7 @@ import play.api.libs.json.Json
 import play.modules.reactivemongo.json.collection.JSONCollection
 import reactivemongo.bson.BSONDocument
 import reactivemongo.core.commands.LastError
+import utils.Environment
 import utils.TokenGenerator.{generateConsumerKey, generateSHAToken}
 
 import scala.concurrent.Future
@@ -24,7 +25,7 @@ trait ConsumerPersistence {
   import play.modules.reactivemongo.json.BSONFormats.BSONDocumentFormat
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  val collName = "consumers"
+  val collName = Environment.consumerCollection
 
   lazy val collection: JSONCollection = db.collection[JSONCollection](collName)
 

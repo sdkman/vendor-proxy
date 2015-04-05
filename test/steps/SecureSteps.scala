@@ -11,7 +11,7 @@ import utils.TokenGenerator
 class SecureSteps extends ScalaDsl with EN with ShouldMatchers with ScalaFutures {
 
   Before() { scenario =>
-    consumersColl = Mongo.createCollection(mongo, "consumers")
+    consumersColl = Mongo.createCollection(mongo, "vendors")
   }
 
   After() { scenario =>

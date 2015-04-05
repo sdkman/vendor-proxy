@@ -3,7 +3,7 @@ package utils
 import play.api.Play
 import play.api.Play.current
 
-trait Environment {
+object Environment {
 
   def apiUrl(service: String) =
     Play.application.configuration
@@ -18,6 +18,8 @@ trait Environment {
       .getOrElse("invalid")
 
   def secret = Option(System.getenv("ADMIN_TOKEN")).getOrElse("default_token")
+
+  def consumerCollection = Play.application.configuration.getString("consumers.collection").getOrElse("consumers")
 
   def version = Play.application.configuration.getString("application.version").getOrElse("version not found")
 
