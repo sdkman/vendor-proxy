@@ -24,7 +24,7 @@ object AsAdministrator extends Authority {
 
   val adminTokenHeaderName = "admin_token"
 
-  override def secured[T](f: Request[T] => Future[Result]) = { req: Request[T] =>
+  override def secured[T](f: Request[T] => Future[Result]) = { req =>
     req.headers.get(adminTokenHeaderName).fold(forbiddenF) {
       case s if s == Environment.secret => f(req)
       case _ => forbiddenF
@@ -38,7 +38,7 @@ object AsConsumer extends Authority with ConsumerPersistence {
 
   val consumerTokenHeaderName = "consumer_token"
 
-  override def secured[T](fun: (Request[T]) => Future[Result]) = { req: Request[T] =>
+  override def secured[T](fun: (Request[T]) => Future[Result]) = { req =>
     req.headers.get(consumerKeyHeaderName).fold(forbiddenF) { key =>
       req.headers.get(consumerTokenHeaderName).fold(forbiddenF) { token =>
         findByKeyAndToken(key, sha256(token)).flatMap { consumers =>
