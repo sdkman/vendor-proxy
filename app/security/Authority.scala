@@ -35,11 +35,8 @@ object AsConsumer extends ErrorMarshalling with ConsumerPersistence {
   def secured[T](fun: (Request[T], String) => Future[Result]) = { (req: Request[T]) =>
     req.headers.get(consumerKeyHeaderName).fold(forbiddenF) { key =>
       req.headers.get(consumerTokenHeaderName).fold(forbiddenF) { token =>
-        findByKeyAndToken(key, sha256(token)).flatMap { (consumers: List[BSONDocument]) =>
-          if(consumers.nonEmpty) {
-            val consumerName = consumers.head.getAs[String]("name").getOrElse("not_found")
-            fun(req, consumerName)
-          } else forbiddenF
+        findByKeyAndToken(key, sha256(token)).flatMap { (consumerNameO: Option[String]) =>
+          consumerNameO.map(name => fun(req, name)).getOrElse(forbiddenF)
         }
       }
     }

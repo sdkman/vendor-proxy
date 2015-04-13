@@ -31,10 +31,13 @@ trait ConsumerPersistence {
 
   def persist(v: Consumer): Future[LastError] = collection.insert(v)
 
-  def findByKeyAndToken(key: String, token: String): Future[List[BSONDocument]] = {
+  def findByKeyAndToken(key: String, token: String): Future[Option[String]] = {
     val query = BSONDocument("_id" -> key, "token" -> token)
-    collection.find(query).cursor[BSONDocument].collect[List]()
+    collection.find(query).cursor[BSONDocument].collect[List]().map(extractName)
   }
+
+  private def extractName(bsonDocuments: List[BSONDocument]): Option[String] =
+    bsonDocuments.flatMap(_.getAs[String]("name")).headOption
 
   def succMsg(consumer: String) = s"Persisted $consumer"
 
