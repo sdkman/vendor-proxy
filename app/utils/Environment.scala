@@ -10,9 +10,7 @@ object Environment {
       .getString(s"services.$service.url")
       .getOrElse("invalid")
 
-  def tokenHeader(service: String) = "access_token" -> accessToken(service)
-
-  private def accessToken(service: String) =
+  def accessToken(service: String) =
     Play.application.configuration
       .getString(s"services.$service.accessToken")
       .getOrElse("invalid")

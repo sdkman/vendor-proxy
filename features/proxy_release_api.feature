@@ -31,7 +31,7 @@
           |  "message": "released groovy version: 2.3.6"
           |}
     """
-    And the remote release service expects payload:
+    And the remote release service expects payload and appropriate headers:
     """
           |{
           |  "candidate" : "groovy",
@@ -108,7 +108,7 @@
           |  "message": "duplicate candidate version: groovy 2.3.6"
           |}
     """
-    And the remote release service expects payload:
+    And the remote release service expects payload and appropriate headers:
     """
           |{
           |  "candidate" : "groovy",
@@ -143,7 +143,7 @@
           |  "message": "Internal Server Error"
           |}
     """
-    And the remote release service expects payload:
+    And the remote release service expects payload and appropriate headers:
       """
           |{
           |  "candidate" : "groovy",
