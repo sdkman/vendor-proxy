@@ -1,0 +1,32 @@
+sudo: required
+  
+services:
+  - docker
+
+language: scala
+
+scala:
+- 2.11.8
+
+before_install:
+  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - docker run -d -p 27017:27017 mongo:latest
+
+script:
+  - ./sbt clean compile docker:publishLocal
+  - docker run -d -p 9000:9000 --net=host sdkman/secure-proxy:1.0.0-SNAPSHOT
+  - ./sbt test
+
+after_success:
+- sbt docker:publish
+
+cache:
+  directories:
+  - "$HOME/.ivy2"
+  - "$HOME/.sbt"
+
+env:
+  global:
+  - secure: gIdpnvJmICGRjLEk/PuqnmjGtCUnaOJg9bFz53/vNKMZj7ZsPpy6A+dwPGSoh5XTqhLIWpMwuBxBruToDXCkF1aO7D8IpS7STnOoivX59SzTbLs6Ay/9YU5KemNIvJy0BqBdVwmT9iDL2IrUrYmxBAldPeGXUWtm5UhV7p623sU=
+  - secure: kAPYhc4cx+zkNIFxXkqzN88yEwfFqXCOVvle1xMW+9v0uY5+OvD5dosT6ftxvo/OTNibk8LFiyCrGm7eG/JE1u0k4kWSZu9AlPQse5BdVIrgBy+MhIvNkzXBfBXxYJy8RSWMAs7v65+oQrmPrJiK2uFNLMhfbNt2q1fXdhEyKMw=
+  - secure: KebySldjt20Xka45Ggy0VCXbmI7R4KyqqxvNbT1vtp0vTCsiPvvK5KtYKkEfAHky2YjnJta+X+3IGT4XL1ou+04Kx/2zyeja05/BWsmoqkmEhVHFH7RzBR/Lwaoq2sAlWUM1+A31fy5uPCrttrOnkDc2HthRmnJbEvyVGlFeEQw=
