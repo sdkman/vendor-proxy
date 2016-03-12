@@ -1,5 +1,9 @@
 import com.typesafe.config._
 
+enablePlugins(JavaServerAppPackaging)
+
+enablePlugins(DockerPlugin)
+
 val conf = ConfigFactory.parseFile(new File("conf/application.conf")).resolve()
 
 version := conf.getString("application.version")
@@ -22,3 +26,6 @@ libraryDependencies ++= Seq(
 )
 
 unmanagedResourceDirectories in Test <+= baseDirectory( _ / "features" )
+
+packageName in Docker := "sdkman/secure-proxy"
+
