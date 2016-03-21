@@ -6,7 +6,7 @@ services:
 language: scala
 
 scala:
-- 2.11.8
+  - 2.11.8
 
 before_install:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
@@ -18,7 +18,7 @@ script:
   - ./sbt test
 
 after_success:
-- sbt docker:publish
+  - sbt docker:publish
 
 cache:
   directories:
