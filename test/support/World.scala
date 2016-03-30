@@ -15,7 +15,7 @@ object World {
     "INTERNAL_SERVER_ERROR" -> 500,
     "BAD_GATEWAY" -> 502)
 
-  val mongo = Mongo.primeDatabase("gvm")
+  val mongo = Mongo.primeDatabase("sdkman")
 
   var consumersColl: MongoCollection = _
 

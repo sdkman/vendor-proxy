@@ -3,15 +3,15 @@ package domain
 import controllers.Consumers._
 import play.api.libs.json.Json
 import play.modules.reactivemongo.json.collection.JSONCollection
+import reactivemongo.api.commands.WriteResult
 import reactivemongo.bson.BSONDocument
-import reactivemongo.core.commands.LastError
 import utils.Environment
 import utils.TokenGenerator.{generateConsumerKey, generateSHAToken}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 case class Consumer(_id: String, name: String, token: String)
-
 object Consumer {
   implicit val consumerWrites = Json.writes[Consumer]
 
@@ -21,28 +21,24 @@ object Consumer {
 
 trait ConsumerPersistence {
 
-  import domain.Consumer.consumerWrites
-  import play.modules.reactivemongo.json.BSONFormats.BSONDocumentFormat
-  import scala.concurrent.ExecutionContext.Implicits.global
+  import play.modules.reactivemongo.json._
 
-  val collName = Environment.consumerCollection
+  lazy val collName = Environment.consumerCollection
 
   lazy val collection: JSONCollection = db.collection[JSONCollection](collName)
 
-  def persist(v: Consumer): Future[LastError] = collection.insert(v)
+  def persist(c: Consumer): Future[WriteResult] = collection.insert(c)
 
   def findByKeyAndToken(key: String, token: String): Future[Option[String]] = {
     val query = BSONDocument("_id" -> key, "token" -> token)
-    collection.find(query).cursor[BSONDocument].collect[List]().map(extractName)
+    collection.find(query).one[BSONDocument].map(extractName)
   }
 
-  private def extractName(bsonDocuments: List[BSONDocument]): Option[String] =
-    bsonDocuments.flatMap(_.getAs[String]("name")).headOption
+  private def extractName(bsonDocuments: Option[BSONDocument]): Option[String] =
+    bsonDocuments.flatMap(_.getAs[String]("name"))
 
   def succMsg(consumer: String) = s"Persisted $consumer"
 
   def errMsg(consumer: String) = s"Can not persist $consumer"
 
 }
-
-case class ConsumerPersistenceException(m: String) extends RuntimeException(m: String)
