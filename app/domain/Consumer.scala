@@ -29,16 +29,9 @@ trait ConsumerPersistence {
 
   def persist(c: Consumer): Future[WriteResult] = collection.insert(c)
 
-  def findByKeyAndToken(key: String, token: String): Future[Option[String]] = {
-    val query = BSONDocument("_id" -> key, "token" -> token)
-    collection.find(query).one[BSONDocument].map(extractName)
-  }
+  def findByKeyAndToken(key: String, token: String) =
+    collection.find(BSONDocument("_id" -> key, "token" -> token)).one[BSONDocument].map(extractName)
 
-  private def extractName(bsonDocuments: Option[BSONDocument]): Option[String] =
-    bsonDocuments.flatMap(_.getAs[String]("name"))
-
-  def succMsg(consumer: String) = s"Persisted $consumer"
-
-  def errMsg(consumer: String) = s"Can not persist $consumer"
+  private def extractName(bsonDocuments: Option[BSONDocument]) = bsonDocuments.flatMap(_.getAs[String]("name"))
 
 }
