@@ -14,7 +14,7 @@ object Health extends Controller with MongoController {
 
   val alive = Action.async { request =>
     probeDatabase.map(s => Ok(obj("status" -> 200, "alive" -> true))).recover {
-      case _ => ServiceUnavailable(obj("status" -> 503, "alive" -> false))
+      case e: Exception => ServiceUnavailable(obj("status" -> 503, "alive" -> false, "message" -> e.getMessage))
     }
   }
 
