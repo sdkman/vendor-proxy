@@ -19,6 +19,8 @@ object Environment {
 
   def consumerCollection = Play.application.configuration.getString("consumers.collection").getOrElse("consumers")
 
+  def applicationCollection = Play.application.configuration.getString("application.collection").getOrElse("application")
+
   def version = Play.application.configuration.getString("application.version").getOrElse("version not found")
 
 }

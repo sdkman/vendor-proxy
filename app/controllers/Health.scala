@@ -1,16 +1,32 @@
 package controllers
 
-import play.api.libs.json.Json
+import play.api.libs.json.Json.obj
 import play.api.mvc._
+import play.modules.reactivemongo.MongoController
+import play.modules.reactivemongo.json.collection.JSONCollection
+import reactivemongo.bson.BSONDocument
 import utils.Environment
 
-object Health extends Controller {
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-  val alive = Action { request =>
-    Ok(Json.obj("status" -> 200, "message" -> "Alive!"))
+object Health extends Controller with MongoController {
+
+  val alive = Action.async { request =>
+    probeDatabase.map(s => Ok(obj("status" -> 200, "alive" -> true))).recover {
+      case _ => ServiceUnavailable(obj("status" -> 503, "alive" -> false))
+    }
   }
 
   val info = Action { request =>
-    Ok(Json.obj("version" -> Environment.version))
+    Ok(obj("version" -> Environment.version))
   }
+
+  import play.modules.reactivemongo.json._
+
+  lazy val appColl = Environment.applicationCollection
+
+  lazy val collection: JSONCollection = db.collection[JSONCollection](appColl)
+
+  def probeDatabase: Future[_] = collection.find(BSONDocument("alive" -> "OK")).one[BSONDocument]
 }
