@@ -8,4 +8,3 @@ GET         /info             controllers.Health.info
 POST        /consumers        controllers.Consumers.create
 POST        /*service         controllers.Proxy.execute(service: String)
 PUT         /*service         controllers.Proxy.execute(service: String)
-GET         /CB2E8996113D86156575BBFBE47D6DA3.txt controllers.Assets.at(path="/public", file="CB2E8996113D86156575BBFBE47D6DA3.txt")
