@@ -8,7 +8,7 @@ val conf = ConfigFactory.parseFile(new File("conf/application.conf")).resolve()
 
 version := conf.getString("application.version")
 
-name := """security-proxy"""
+name := """vendor-proxy"""
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
@@ -27,5 +27,5 @@ libraryDependencies ++= Seq(
 
 unmanagedResourceDirectories in Test <+= baseDirectory( _ / "features" )
 
-packageName in Docker := "sdkman/secure-proxy"
+packageName in Docker := "sdkman/vendor-proxy"
 
