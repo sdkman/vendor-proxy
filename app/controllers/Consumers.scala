@@ -1,10 +1,11 @@
 package controllers
 
+import com.google.inject.Inject
 import domain.{Consumer, ConsumerPersistence}
 import play.api.Logger._
 import play.api.libs.json.Json.toJson
 import play.api.mvc._
-import play.modules.reactivemongo.MongoController
+import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.core.commands.LastError
 import security.AsAdministrator
 import utils.TokenGenerator.sha256
@@ -13,7 +14,7 @@ import utils.{ConsumerMarshalling, ErrorMarshalling}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object Consumers extends Controller with MongoController with ConsumerPersistence
+class Consumers @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Controller with ConsumerPersistence
   with ConsumerMarshalling with ErrorMarshalling {
 
   def create = AsAdministrator(parse.json) { req =>

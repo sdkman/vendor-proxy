@@ -14,8 +14,11 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.8"
 
+routesGenerator := InjectedRoutesGenerator
+
+val reactiveMongoVer = "0.11.14"
 libraryDependencies ++= Seq(
-  "org.reactivemongo" %% "play2-reactivemongo" % "0.11.10.play23",
+  "org.reactivemongo" %% "play2-reactivemongo" % s"$reactiveMongoVer-play24",
   ws,
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "info.cukes" %% "cucumber-scala" % "1.1.8" % "test",

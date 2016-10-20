@@ -1,10 +1,10 @@
 package domain
 
-import controllers.Consumers._
 import play.api.libs.json.Json
-import play.modules.reactivemongo.json.collection.JSONCollection
+import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.commands.WriteResult
 import reactivemongo.bson.BSONDocument
+import reactivemongo.play.json.collection.JSONCollection
 import utils.Environment
 import utils.TokenGenerator.{generateConsumerKey, generateSHAToken}
 
@@ -12,6 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 case class Consumer(_id: String, name: String, token: String)
+
 object Consumer {
   implicit val consumerWrites = Json.writes[Consumer]
 
@@ -23,9 +24,11 @@ trait ConsumerPersistence {
 
   import play.modules.reactivemongo.json._
 
+  val reactiveMongoApi: ReactiveMongoApi
+
   lazy val collName = Environment.consumerCollection
 
-  lazy val collection: JSONCollection = db.collection[JSONCollection](collName)
+  lazy val collection = reactiveMongoApi.db.collection[JSONCollection](collName)
 
   def persist(c: Consumer): Future[WriteResult] = collection.insert(c)
 

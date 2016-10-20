@@ -3,7 +3,7 @@ package security
 import domain.ConsumerPersistence
 import play.api.libs.json.JsValue
 import play.api.mvc._
-import reactivemongo.bson.BSONDocument
+import play.modules.reactivemongo.ReactiveMongoApi
 import utils.TokenGenerator.sha256
 import utils.{Environment, ErrorMarshalling}
 
@@ -25,6 +25,9 @@ object AsAdministrator extends ErrorMarshalling {
 }
 
 object AsConsumer extends ErrorMarshalling with ConsumerPersistence {
+
+  import play.api.Play.current
+  lazy val reactiveMongoApi = current.injector.instanceOf[ReactiveMongoApi]
 
   val consumerKeyHeaderName = "consumer_key"
 
