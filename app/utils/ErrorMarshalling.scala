@@ -21,5 +21,7 @@ trait ErrorMarshalling {
 
   def conflictMsg(consumer: String) = toJson(ErrorMessage(409, s"Duplicate key for consumer: $consumer"))
 
-  val internalServerErrorMsg = toJson(ErrorMessage(500, "Internal Server Error"))
+  def clientError(statusCode: Int, message: String) = toJson(ErrorMessage(statusCode, message))
+
+  def internalServerError(e: Throwable) = toJson(ErrorMessage(500, e.getMessage))
 }
