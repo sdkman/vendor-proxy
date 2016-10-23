@@ -2,13 +2,13 @@ package steps
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import cucumber.api.scala.{EN, ScalaDsl}
-import org.scalatest.ShouldMatchers
+import org.scalatest.Matchers
 import org.scalatest.concurrent.ScalaFutures
 import support.World._
 import support.{Mongo, World}
 import utils.TokenGenerator
 
-class SecureSteps extends ScalaDsl with EN with ShouldMatchers with ScalaFutures {
+class SecureSteps extends ScalaDsl with EN with Matchers with ScalaFutures {
 
   Before() { scenario =>
     consumersColl = Mongo.createCollection(mongo, "vendors")

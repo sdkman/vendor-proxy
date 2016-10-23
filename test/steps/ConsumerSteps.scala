@@ -1,13 +1,13 @@
 package steps
 
 import cucumber.api.scala.{EN, ScalaDsl}
-import org.scalatest.ShouldMatchers
+import org.scalatest.Matchers
 import play.api.libs.json.Json
 import support.World.{responseBody, responseCode, _}
-import support.{Mongo, Http, World}
-import utils.{ErrorMarshalling, ConsumerMarshalling}
+import support.{Http, Mongo, World}
+import utils.{ConsumerMarshalling, ErrorMarshalling}
 
-class ConsumerSteps extends ScalaDsl with EN with ShouldMatchers with ConsumerMarshalling with ErrorMarshalling {
+class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshalling with ErrorMarshalling {
 
   val ConsumerTokenPattern = """^[a-f0-9]{64}$""".r
 

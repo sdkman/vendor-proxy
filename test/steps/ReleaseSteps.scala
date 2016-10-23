@@ -2,12 +2,12 @@ package steps
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import cucumber.api.scala.{EN, ScalaDsl}
-import org.scalatest.ShouldMatchers
+import org.scalatest.Matchers
 import play.api.libs.json.Json
 import support.Http
 import support.World._
 
-class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
+class ReleaseSteps extends ScalaDsl with EN with Matchers {
 
   When("""the remote release service is unavailable""") { () =>
     //nothing to do
