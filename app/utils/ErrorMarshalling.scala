@@ -23,5 +23,5 @@ trait ErrorMarshalling {
 
   def clientError(statusCode: Int, message: String) = toJson(ErrorMessage(statusCode, message))
 
-  def internalServerError(e: Throwable) = toJson(ErrorMessage(500, e.getMessage))
+  def internalServerError(e: Throwable) = toJson(ErrorMessage(500, e.toString))
 }

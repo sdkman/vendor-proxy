@@ -1,6 +1,6 @@
 import com.google.inject.AbstractModule
-import utils.MongoHealthCheck
+import repos.HealthCheckRepo
 
 class Module extends AbstractModule {
-  def configure() = bind(classOf[MongoHealthCheck]).asEagerSingleton()
+  def configure() = bind(classOf[HealthCheckRepo]).asEagerSingleton()
 }
