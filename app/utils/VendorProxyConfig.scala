@@ -12,10 +12,7 @@ class VendorProxyConfig @Inject()(val configuration: Configuration) {
 
   def secret = Option(System.getenv("ADMIN_TOKEN")).getOrElse("default_token")
 
-  def consumerCollection = configuration.getString("consumers.collection").getOrElse("consumers")
-
-  def applicationCollection = configuration.getString("application.collection").getOrElse("application")
+  def consumersTable = configuration.getString("consumers.table").getOrElse("consumers")
 
   def version = configuration.getString("application.version").getOrElse("version not found")
-
 }

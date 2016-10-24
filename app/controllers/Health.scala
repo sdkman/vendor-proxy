@@ -1,18 +1,27 @@
 package controllers
 
 import com.google.inject.Inject
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.json.Json.obj
 import play.api.mvc._
-import repos.HealthCheckRepo
-import utils.VendorProxyConfig
+import slick.driver.JdbcProfile
+import utils.{ErrorMarshalling, VendorProxyConfig}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Health @Inject() (val config: VendorProxyConfig, val hcr: HealthCheckRepo) extends Controller {
+class Health @Inject()(val config: VendorProxyConfig, val dbConfigProvider: DatabaseConfigProvider)
+  extends Controller
+    with HasDatabaseConfigProvider[JdbcProfile]
+    with ErrorMarshalling {
 
   val alive = Action.async { request =>
-    hcr.probeDatabase().map(s => Ok(obj("status" -> 200, "alive" -> true))).recover {
-      case e: Exception => ServiceUnavailable(obj("status" -> 503, "alive" -> false, "message" -> e.getMessage))
+    import slick.driver.PostgresDriver.api._
+    db.run(sql"SELECT 1".as[(String)]).map { (maybe: Vector[String]) =>
+      maybe.headOption.map { result =>
+        Ok(obj("status" -> 200, "alive" -> true, "message" -> s"result from test query: $result"))
+      }.get
+    }.recover {
+      case e: Throwable => ServiceUnavailable(serviceUnavailableMsg(e))
     }
   }
 

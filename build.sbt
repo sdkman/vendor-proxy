@@ -16,15 +16,14 @@ scalaVersion := "2.11.8"
 
 routesGenerator := InjectedRoutesGenerator
 
-val reactiveMongoVer = "0.11.14"
 libraryDependencies ++= Seq(
   ws,
-  "org.reactivemongo" %% "play2-reactivemongo" % s"$reactiveMongoVer-play24",
+  "org.postgresql" % "postgresql" % "9.4.1211",
+  "com.typesafe.play" %% "play-slick" % "2.0.0",
   "org.scalatest" %% "scalatest" % "3.0.0" % "test",
   "info.cukes" %% "cucumber-scala" % "1.2.5" % "test",
   "info.cukes" % "cucumber-junit" % "1.2.5" % "test",
   "org.scalaj" %% "scalaj-http" % "0.3.16" % "test",
-  "org.mongodb" %% "casbah" % "3.1.1" % "test",
   "com.github.tomakehurst" % "wiremock" % "2.2.2"
 )
 

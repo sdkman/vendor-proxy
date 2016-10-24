@@ -2,7 +2,6 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET         /                 controllers.Health.alive
 GET         /alive            controllers.Health.alive
 GET         /info             controllers.Health.info
 POST        /consumers        controllers.Consumers.create

@@ -2,30 +2,37 @@ package repos
 
 import com.google.inject.Inject
 import domain.Consumer
-import play.modules.reactivemongo.ReactiveMongoApi
-import reactivemongo.api.commands.WriteResult
-import reactivemongo.bson.BSONDocument
-import reactivemongo.play.json.collection.JSONCollection
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import slick.driver.JdbcProfile
+import slick.driver.PostgresDriver.api._
+import slick.lifted.TableQuery
 import utils.VendorProxyConfig
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ConsumerRepo @Inject()(val reactiveMongoApi: ReactiveMongoApi, val config: VendorProxyConfig) {
+class ConsumerRepo @Inject()(val dbConfigProvider: DatabaseConfigProvider, val config: VendorProxyConfig)
+  extends HasDatabaseConfigProvider[JdbcProfile] {
 
-  lazy val collName = config.consumerCollection
+  lazy val ConsumersTable = TableQuery[ConsumersTable]
 
-  lazy val collection = reactiveMongoApi.db.collection[JSONCollection](collName)
+  def persist(c: Consumer): Future[Int] = db.run(ConsumersTable += c)
 
-  import Consumer.consumerWrites
-  def persist(c: Consumer): Future[WriteResult] = collection.insert(c)
+  private def findConsumer(key: String, token: String): DBIOAction[Option[String], NoStream, Effect.Read] =
+    ConsumersTable
+      .filter(_.id === key)
+      .filter(_.token === token)
+      .map(_.name)
+      .result.headOption
 
-  import play.modules.reactivemongo.json._
-  def findByKeyAndToken(key: String, token: String): Future[Option[String]] = {
-    val query = BSONDocument("_id" -> key, "token" -> token)
-    collection.find(query).one[BSONDocument].map(extractName)
+  def findByKeyAndToken(key: String, token: String): Future[Option[String]] = db.run(findConsumer(key, token))
+
+  class ConsumersTable(tag: Tag) extends Table[Consumer](tag, config.consumersTable) {
+    def id = column[String]("id")
+
+    def name = column[String]("name")
+
+    def token = column[String]("token")
+
+    def * = (id, name, token) <> (Consumer.tupled, Consumer.unapply)
   }
-
-  private def extractName(bsonDocuments: Option[BSONDocument]) = bsonDocuments.flatMap(_.getAs[String]("name"))
-
 }

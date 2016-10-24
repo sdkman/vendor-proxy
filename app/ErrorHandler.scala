@@ -13,5 +13,5 @@ class ErrorHandler extends HttpErrorHandler with ErrorMarshalling {
     Future.successful(Status(statusCode)(clientError(statusCode, s"A client error occurred: $message")))
 
   def onServerError(request: RequestHeader, exception: Throwable) =
-    Future.successful(Status(500)(internalServerError(exception)))
+    Future.successful(Status(500)(internalServerErrorMsg(exception)))
 }
