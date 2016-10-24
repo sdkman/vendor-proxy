@@ -2,6 +2,7 @@ sudo: required
   
 services:
   - docker
+  - postgresql
 
 language: scala
 
@@ -10,8 +11,7 @@ scala:
 
 before_install:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - docker run -d -p 27017:27017 mongo:latest
-
+  - psql -h localhost --username="postgres" -f sql/ddl.sql
 script:
   - ./sbt clean compile docker:publishLocal
   - docker run -d -p 9000:9000 --net=host sdkman/vendor-proxy:1.0.0-SNAPSHOT
