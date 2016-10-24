@@ -15,7 +15,7 @@ class ConsumerRepo @Inject()(val dbConfigProvider: DatabaseConfigProvider, val c
 
   lazy val ConsumersTable = TableQuery[ConsumersTable]
 
-  def persist(c: Consumer): Future[Int] = db.run(ConsumersTable += c)
+  def persist(c: Consumer): Future[Consumer] = db.run(ConsumersTable returning ConsumersTable.map(_.id) into ((c, id) => c.copy(id)) += c)
 
   private def findConsumer(key: String, token: String): DBIOAction[Option[String], NoStream, Effect.Read] =
     ConsumersTable
