@@ -15,7 +15,7 @@ class ProxyController @Inject()(val config: VendorProxyConfig, wSClient: WSClien
     with RequestHeaders {
 
   def execute(service: String) = AsConsumer(parse.json) { (request, consumerName) =>
-    Logger.info(s"Proxying $service on behalf of $consumerName")
+    Logger.info(s"Proxy $service on behalf of $consumerName")
     wSClient.url(config.apiUrl(service))
       .withHeaders(tokenHeader(service), consumerHeader(consumerName))
       .withMethod(request.method)
