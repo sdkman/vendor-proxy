@@ -5,7 +5,7 @@ import utils.TokenGenerator.{generateConsumerKey, generateSHAToken}
 
 case class Consumer(id: String, name: String, token: String)
 
-object Consumerz {
+object Consumers {
   implicit val consumerWrites = Json.writes[Consumer]
   implicit val consumerReads = Json.reads[Consumer]
 

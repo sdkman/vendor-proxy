@@ -1,7 +1,7 @@
 package controllers
 
 import com.google.inject.Inject
-import domain.Consumerz
+import domain.Consumers
 import org.postgresql.util.PSQLException
 import play.Logger
 import play.api.libs.json.Json.toJson
@@ -14,14 +14,14 @@ import utils.{ConsumerMarshalling, ErrorMarshalling, VendorProxyConfig}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class Consumers @Inject()(val cr: ConsumerRepo)(implicit val env: VendorProxyConfig)
+class ConsumerController @Inject()(val cr: ConsumerRepo)(implicit val env: VendorProxyConfig)
   extends Controller
     with ConsumerMarshalling
     with ErrorMarshalling {
 
   def create = AsAdministrator(parse.json) { req =>
     req.body.validate[Request].asOpt.fold(Future(BadRequest(badRequestMsg))) { consumerReq =>
-      val consumer = Consumerz.fromName(consumerReq.consumer)
+      val consumer = Consumers.fromName(consumerReq.consumer)
       cr.persist(consumer.copy(token = sha256(consumer.token))).map {
         case num if num > 0 =>
           Logger.info(s"Successfully persisted Consumer: ${consumer.name}: $num")

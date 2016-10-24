@@ -11,7 +11,7 @@ import utils.{VendorProxyConfig, RequestHeaders}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Proxy @Inject()(val config: VendorProxyConfig, implicit val cr: ConsumerRepo)
+class ProxyController @Inject()(val config: VendorProxyConfig, implicit val cr: ConsumerRepo)
   extends Controller
     with RequestHeaders {
 

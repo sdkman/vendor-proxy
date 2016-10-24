@@ -9,7 +9,7 @@ import utils.{ErrorMarshalling, VendorProxyConfig}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Health @Inject()(val config: VendorProxyConfig, val dbConfigProvider: DatabaseConfigProvider)
+class HealthController @Inject()(val config: VendorProxyConfig, val dbConfigProvider: DatabaseConfigProvider)
   extends Controller
     with HasDatabaseConfigProvider[JdbcProfile]
     with ErrorMarshalling {
