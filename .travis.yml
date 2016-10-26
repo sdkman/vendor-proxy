@@ -14,7 +14,7 @@ before_install:
   - psql -h localhost --username="postgres" -f sql/ddl.sql
 script:
   - ./sbt clean compile docker:publishLocal
-  - docker run -d -p 9000:9000 --net=host sdkman/vendor-proxy:1.0.0-SNAPSHOT
+  - docker run -d -p 9000:9000 --net=host sdkman/vendor-proxy:2.0.1
   - ./sbt test
 
 after_success:
