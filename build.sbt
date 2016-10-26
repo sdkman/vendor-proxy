@@ -24,7 +24,7 @@ libraryDependencies ++= Seq(
   "info.cukes" %% "cucumber-scala" % "1.2.5" % "test",
   "info.cukes" % "cucumber-junit" % "1.2.5" % "test",
   "org.scalaj" %% "scalaj-http" % "0.3.16" % "test",
-  "com.github.tomakehurst" % "wiremock" % "2.2.2"
+  "com.github.tomakehurst" % "wiremock" % "2.2.2" % "test"
 )
 
 unmanagedResourceDirectories in Test <+= baseDirectory( _ / "features" )
