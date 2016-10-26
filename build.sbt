@@ -20,11 +20,11 @@ libraryDependencies ++= Seq(
   ws,
   "org.postgresql" % "postgresql" % "9.4.1211",
   "com.typesafe.play" %% "play-slick" % "2.0.0",
-  "org.scalatest" %% "scalatest" % "3.0.0" % "test",
-  "info.cukes" %% "cucumber-scala" % "1.2.5" % "test",
-  "info.cukes" % "cucumber-junit" % "1.2.5" % "test",
-  "org.scalaj" %% "scalaj-http" % "0.3.16" % "test",
-  "com.github.tomakehurst" % "wiremock" % "2.2.2" % "test"
+  "org.scalatest" %% "scalatest" % "3.0.0" % Test,
+  "info.cukes" %% "cucumber-scala" % "1.2.5" % Test,
+  "info.cukes" % "cucumber-junit" % "1.2.5" % Test,
+  "org.scalaj" %% "scalaj-http" % "0.3.16" % Test,
+  "com.github.tomakehurst" % "wiremock" % "2.2.2" % Test
 )
 
 unmanagedResourceDirectories in Test <+= baseDirectory( _ / "features" )
