@@ -11,13 +11,13 @@ import scala.concurrent.Future
 
 object AsAdministrator extends ErrorMarshalling {
 
-  val adminTokenHeaderName = "admin_token"
+  val adminTokenHeaderNames = Seq("admin_token", "Admin-Token")
 
   def apply(parser: BodyParser[JsValue])(f: Request[JsValue] => Future[Result])(implicit config: VendorProxyConfig) =
     Action.async(parser)(secured(f))
 
   def secured[T](f: Request[T] => Future[Result])(implicit env: VendorProxyConfig) = { (req: Request[T]) =>
-    req.headers.get(adminTokenHeaderName).fold(forbiddenF) {
+    adminTokenHeaderNames.flatMap(req.headers.get).headOption.fold(forbiddenF) {
       case s if s == env.secret => f(req)
       case _ => forbiddenF
     }
@@ -26,16 +26,16 @@ object AsAdministrator extends ErrorMarshalling {
 
 object AsConsumer extends ErrorMarshalling {
 
-  val consumerKeyHeaderName = "consumer_key"
+  val consumerKeyHeaderNames = Seq("consumer_key", "Consumer-Key")
 
-  val consumerTokenHeaderName = "consumer_token"
+  val consumerTokenHeaderNames = Seq("consumer_token", "Consumer-Token")
 
   def apply(parser: BodyParser[JsValue])(f: (Request[JsValue], String) => Future[Result])(implicit cr: ConsumerRepo) =
     Action.async(parser)(secured(f))
 
   def secured[T](fun: (Request[T], String) => Future[Result])(implicit cr: ConsumerRepo) = { (req: Request[T]) =>
-    req.headers.get(consumerKeyHeaderName).fold(forbiddenF) { key =>
-      req.headers.get(consumerTokenHeaderName).fold(forbiddenF) { token =>
+    consumerKeyHeaderNames.flatMap(req.headers.get).headOption.fold(forbiddenF) { key =>
+      consumerTokenHeaderNames.flatMap(req.headers.get).headOption.fold(forbiddenF) { token =>
         cr.findByKeyAndToken(key, sha256(token)).flatMap { (consumerNameO: Option[String]) =>
           consumerNameO.map(name => fun(req, name)).getOrElse(forbiddenF)
         }

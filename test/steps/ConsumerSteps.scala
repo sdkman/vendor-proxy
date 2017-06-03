@@ -17,12 +17,12 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
 
   val ConsumerTokenPattern = """^[a-f0-9]{64}$""".r
 
-  Given( """^the Admin Token "(.*?)" is presented$""") { (token: String) =>
+  Given( """^the "Admin-Token" "(.*?)" is presented$""") { (token: String) =>
     Env.adminToken = token
   }
 
   When("""^the Create Consumer endpoint "(.*)" is posted a request:$""") { (endpoint: String, json: String) =>
-    val (rc, rb) = Http.postJson(endpoint, json.stripMargin)(Map("admin_token" -> adminToken))
+    val (rc, rb) = Http.postJson(endpoint, json.stripMargin)(Map("Admin-Token" -> adminToken))
     Env.responseCode = rc
     Env.responseBody = rb
   }
@@ -52,7 +52,7 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
 
   Then("""the payload contains message "(.*)"""") { (message: String) =>
     Json.parse(responseBody).validate[ErrorMessage].asOpt match {
-      case Some(actual) => actual.message shouldBe message
+      case Some(actual) => actual.message should include(message)
       case None => fail("No valid message found.")
     }
   }

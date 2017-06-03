@@ -19,24 +19,24 @@ The application hinges on configuration to be set up in the `conf/application.co
       "release" = {
         url = "http://localhost:8080/release"
         url = ${?RELEASE_ENDPOINT_API_URL}
-        accessToken = "default_token"
-        accessToken = ${?RELEASE_API_TOKEN}
+        serviceToken = "default_token"
+        serviceToken = ${?RELEASE_API_TOKEN}
       }
       "default" = {
         url = "http://localhost:8080/default"
         url = ${?DEFAULT_ENDPOINT_API_URL}
-        accessToken = "default_token"
-        accessToken = ${?RELEASE_API_TOKEN}
+        serviceToken = "default_token"
+        serviceToken = ${?RELEASE_API_TOKEN}
       }
       "announce/struct" = {
         url = "http://localhost:8081/announce/struct"
         url = ${?BROADCAST_STRUCT_API_URL}
-        accessToken = "default_token"
-        accessToken = ${?BROADCAST_API_TOKEN}
+        serviceToken = "default_token"
+        serviceToken = ${?BROADCAST_API_TOKEN}
       }
     }
 
-In these configuration blocks per service, we have opted for using environment variables, although this is not a necessity. We have also provied default values for each environment variable. Each configuratoin block also specifies an `accessToken` which will be propagated to the underlying microservice as an `access_token` request header. Provided your microservice communications use SSL, your microservices should be secure.
+In these configuration blocks per service, we have opted for using environment variables, although this is not a necessity. We have also provied default values for each environment variable. Each configuratoin block also specifies an `serviceToken` which will be propagated to the underlying microservice as an `Service-Token` request header. Provided your microservice communications use SSL, your microservices should be secure.
 
 
 ###Creating new Consumers
@@ -53,8 +53,8 @@ and returns a JSON response:
       "name": "groovy"
     }
 
-The endpoint is itself secured, and looks for the presence of an `admin_token` request header. This value of this can be set by providing an `ADMIN_TOKEN` environment variable, which defaults to `default_token`.
+The endpoint is itself secured, and looks for the presence of an `Admin-Token` request header. This value of this can be set by providing an `ADMIN_TOKEN` environment variable, which defaults to `default_token`.
 
-Once the Consumer Key and Token have been obtained, they can be used to make subsequent calls to proxied endpoints. All these calls will _require `consumer_key` and `consumer_token` headers to be set respectively for each call_.
+Once the Consumer Key and Token have been obtained, they can be used to make subsequent calls to proxied endpoints. All these calls will _require `Consumer-Key` and `Consumer-Token` headers to be set respectively for each call_.
 
 Give it a spin and feel free to raise issues and pull requests!
