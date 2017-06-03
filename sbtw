@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -eu
+
+EXTRA_ARGS=""
+IVY_CACHE=${IVY_CACHE-}
+SBT_CACHE=${SBT_CACHE-}
+
+if [ -n "$IVY_CACHE" ]; then
+	EXTRA_ARGS="-Dsbt.ivy.home=$IVY_CACHE"
+fi
+
+if [ -n "$SBT_CACHE" ]; then
+	EXTRA_ARGS="$EXTRA_ARGS -Dsbt.boot.directory=$SBT_CACHE"
+fi
+
+echo "Running sbt -DtestLog.level=INFO $EXTRA_ARGS $@"
+sbt -DtestLog.level=INFO $EXTRA_ARGS $@

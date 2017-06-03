@@ -12,10 +12,10 @@ scala:
 before_install:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - psql -h localhost --username="postgres" -f sql/ddl.sql
+
 script:
-  - ./sbt clean compile docker:publishLocal
-  - docker run -d -p 9000:9000 --net=host sdkman/vendor-proxy:1.0.0-SNAPSHOT
-  - ./sbt test
+  - ./sbtw clean compile docker:publishLocal
+  - ./compose run --rm vendor_proxy_acc_tests
 
 after_success:
   - sbt docker:publish

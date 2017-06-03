@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+
+  vendor-proxy:
+    container_name: vendor-proxy
+    image: sdkman/vendor-proxy:1.0.0-SNAPSHOT
+    ports:
+      - "9000:9000"
+    volumes:
+      - $PWD/wait-for-it.sh:/opt/docker/wait-for-it.sh
+    command: bash -c "/opt/docker/wait-for-it.sh -t 60 'postgres:5432'"
+
+  postgres:
+    container_name: postgres
+    image: postgres:9.5.2
+    ports:
+     - "5432:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_DB: ""
+
+  vendor_proxy_acc_tests:
+    image: nightscape/docker-sbt:latest
+    working_dir: /work
+    user: ${USER_ID}
+    volumes:
+      - ${PWD}:/work
+      - ${CACHE_DIR}/.ivy2:/ivy2
+      - ${CACHE_DIR}/.sbt:/sbt
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/bin/docker
+    depends_on:
+      - vendor-proxy
+    command: ./sbtw test
