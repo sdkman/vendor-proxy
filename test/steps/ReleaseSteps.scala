@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
 import play.api.libs.json.Json
-import support.Http
+import support.{Env, Http}
 import support.Env._
 
 class ReleaseSteps extends ScalaDsl with EN with Matchers {
@@ -13,14 +13,13 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
     //nothing to do
   }
 
-  When("""^posting JSON on the "(.*?)" endpoint:$""") { (endpoint: String, payload: String) =>
-    val headers = Map("Consumer-Key" -> consumerKey, "Consumer-Token" -> consumerToken)
-    val (rc, rb) = Http.postJson(endpoint, payload.stripMargin)(headers)
+  When("""^posting JSON on the (.*) endpoint:$""") { (endpoint: String, payload: String) =>
+    val (rc, rb) = Http.postJson(endpoint, payload.stripMargin)(Env.headers.toMap)
     responseCode = rc
     responseBody = rb
   }
 
-  Then("""^the status received is "(.*?)"$""") { (status: String) =>
+  Then("""^the status received is (.*)$""") { (status: String) =>
     responseCode shouldBe statusCodes(status)
   }
 
@@ -34,7 +33,7 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
     actual shouldBe expected
   }
 
-  Given("""^the remote release service returns a "(.*)" response:$""") { (status: String, payload: String) =>
+  Given("""^the remote release service returns a (.*) response:$""") { (status: String, payload: String) =>
     stubFor(post(urlEqualTo("/release"))
       .willReturn(aResponse()
         .withBody(payload.stripMargin)

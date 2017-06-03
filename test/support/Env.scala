@@ -3,6 +3,8 @@ package support
 import com.github.tomakehurst.wiremock.client.WireMock
 import cucumber.api.scala.ScalaDsl
 
+import scala.collection.mutable
+
 object Env extends ScalaDsl {
 
   val SERVICE_UP_HOST = "localhost"
@@ -21,9 +23,7 @@ object Env extends ScalaDsl {
 
   var adminToken: String = "invalid"
 
-  var consumerKey: String = "invalid"
-
-  var consumerToken: String = "invalid"
+  val headers = mutable.Map[String, String]()
 
   var responseCode = 0
 

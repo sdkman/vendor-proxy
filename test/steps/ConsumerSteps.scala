@@ -17,21 +17,17 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
 
   val ConsumerTokenPattern = """^[a-f0-9]{64}$""".r
 
-  Given( """^the "Admin-Token" "(.*?)" is presented$""") { (token: String) =>
-    Env.adminToken = token
-  }
-
-  When("""^the Create Consumer endpoint "(.*)" is posted a request:$""") { (endpoint: String, json: String) =>
-    val (rc, rb) = Http.postJson(endpoint, json.stripMargin)(Map("Admin-Token" -> adminToken))
+  When("""^the Create Consumer endpoint (.*) is posted a request:$""") { (endpoint: String, json: String) =>
+    val (rc, rb) = Http.postJson(endpoint, json.stripMargin)(Env.headers.toMap)
     Env.responseCode = rc
     Env.responseBody = rb
   }
 
-  Then("""^the returned status is "(.*?)"$""") { (status: String) =>
+  Then("""^the returned status is (.*)$""") { (status: String) =>
     responseCode shouldBe statusCodes(status)
   }
 
-  Then("""^the payload contains a consumerKey of value "(.*?)"$""") { (value: String) =>
+  Then("""^the payload contains a consumerKey of value (.*)$""") { (value: String) =>
     Json.parse(responseBody).validate[Response].asOpt match {
       case Some(actual) => actual.consumerKey shouldBe value
       case None => fail("No valid response found.")
@@ -50,26 +46,26 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
     }
   }
 
-  Then("""the payload contains message "(.*)"""") { (message: String) =>
+  Then("""the payload contains message (.*)""") { (message: String) =>
     Json.parse(responseBody).validate[ErrorMessage].asOpt match {
       case Some(actual) => actual.message should include(message)
       case None => fail("No valid message found.")
     }
   }
 
-  Then("""the Consumer "(.*)" has been persisted""") { (consumer: String) =>
+  Then("""the Consumer (.*) has been persisted""") { (consumer: String) =>
     Db.vendorExists(consumer) should be
     true
   }
 
-  Then("""the persisted Consumer "(.*)" has consumerKey "(.*)"""") { (consumer: String, consumerKey: String) =>
+  Then("""the persisted Consumer (.*) has consumerKey (.*)""") { (consumer: String, consumerKey: String) =>
     Db.vendorKey(consumer) match {
       case Some(key) => key shouldBe consumerKey
       case None => fail("no consumer found")
     }
   }
 
-  Then("""the persisted Consumer "(.*)" has a valid consumerToken""") { (consumer: String) =>
+  Then("""the persisted Consumer (.*) has a valid consumerToken""") { (consumer: String) =>
     Db.vendorToken(consumer) match {
       case Some(token) => token should fullyMatch regex ConsumerTokenPattern
       case None => fail("no consumer found")
