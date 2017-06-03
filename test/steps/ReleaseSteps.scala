@@ -4,8 +4,8 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
 import play.api.libs.json.Json
-import support.{Env, Http}
-import support.Env._
+import support.{World, Http}
+import support.World._
 
 class ReleaseSteps extends ScalaDsl with EN with Matchers {
 
@@ -14,7 +14,7 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
   }
 
   When("""^posting JSON on the (.*) endpoint:$""") { (endpoint: String, payload: String) =>
-    val (rc, rb) = Http.postJson(endpoint, payload.stripMargin)(Env.headers.toMap)
+    val (rc, rb) = Http.postJson(endpoint, payload.stripMargin)(World.headers.toMap)
     responseCode = rc
     responseBody = rb
   }

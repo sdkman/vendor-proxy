@@ -37,7 +37,7 @@ object Db {
 
   private lazy val VendorsTable = TableQuery[VendorsTable]
 
-  private lazy val database = Database.forURL("jdbc:postgresql://localhost:5432/sdkman_vendor_proxy", "postgres", "")
+  private lazy val database = Database.forURL("jdbc:postgresql://postgres:5432/sdkman_vendor_proxy", "postgres", "")
 
   private val truncateVendorsTableAction = sqlu"TRUNCATE TABLE vendors"
 

@@ -20,7 +20,7 @@ import scalaj.http.{HttpException, HttpOptions, Http => HttpClient}
 
 object Http {
 
-  val host = "http://localhost:9000"
+  val host = "http://vendor-proxy:9000"
 
   def get(endpoint: String)(implicit headers: Map[String, String]): (Int, String) =
     handle(operation(HttpClient.get(s"$host$endpoint")))

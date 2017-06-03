@@ -4,18 +4,23 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
 import play.api.libs.json.Json
-import support.Env._
-import support.{Db, Env, Http}
+import support.World._
+import support.{Db, World, Http}
 import utils.{ConsumerMarshalling, ErrorMarshalling}
 
 class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshalling with ErrorMarshalling {
 
+  Before { s =>
+    Db.truncateVendorsTable()
+    WireMock.reset()
+  }
+
   val ConsumerTokenPattern = """^[a-f0-9]{64}$""".r
 
   When("""^the Create Consumer endpoint (.*) is posted a request:$""") { (endpoint: String, json: String) =>
-    val (rc, rb) = Http.postJson(endpoint, json.stripMargin)(Env.headers.toMap)
-    Env.responseCode = rc
-    Env.responseBody = rb
+    val (rc, rb) = Http.postJson(endpoint, json.stripMargin)(World.headers.toMap)
+    World.responseCode = rc
+    World.responseBody = rb
   }
 
   Then("""^the returned status is (.*)$""") { (status: String) =>

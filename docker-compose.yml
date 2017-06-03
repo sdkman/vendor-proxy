@@ -9,7 +9,10 @@ services:
       - "9000:9000"
     volumes:
       - $PWD/wait-for-it.sh:/opt/docker/wait-for-it.sh
-    command: bash -c "/opt/docker/wait-for-it.sh -t 60 'postgres:5432'"
+    command:
+      - bash -c "/opt/docker/wait-for-it.sh -t 60 'postgres:5432'"
+    depends_on:
+      - postgres
 
   postgres:
     container_name: postgres
@@ -24,10 +27,13 @@ services:
     image: nightscape/docker-sbt:latest
     working_dir: /work
     user: ${USER_ID}
+    environment:
+      SBT_CACHE: "/sbt"
+      IVY_CACHE: "/ivy2"
     volumes:
       - ${PWD}:/work
-      - ${CACHE_DIR}/.ivy2:/ivy2
-      - ${CACHE_DIR}/.sbt:/sbt
+      - ${HOME}/.sbt:/sbt
+      - ${HOME}/.ivy2:/ivy2
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/bin/docker
     depends_on:

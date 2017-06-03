@@ -1,13 +1,12 @@
 package support
 
 import com.github.tomakehurst.wiremock.client.WireMock
-import cucumber.api.scala.ScalaDsl
 
 import scala.collection.mutable
 
-object Env extends ScalaDsl {
+object World {
 
-  val SERVICE_UP_HOST = "localhost"
+  val SERVICE_UP_HOST = "wiremock"
   val SERVICE_UP_PORT = 8080
 
   WireMock.configureFor(SERVICE_UP_HOST, SERVICE_UP_PORT)
@@ -28,9 +27,4 @@ object Env extends ScalaDsl {
   var responseCode = 0
 
   var responseBody = "invalid"
-
-  Before { s =>
-    Db.truncateVendorsTable()
-    WireMock.reset()
-  }
 }

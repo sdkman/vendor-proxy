@@ -13,23 +13,23 @@ It acts as a proxy, searching for the presence of two request headers:
 
 ###Setting up Services to Proxy
 
-The application hinges on configuration to be set up in the `conf/application.conf` field. Here are some current examples as used by the GVM api:
+The application hinges on configuration to be set up in the `conf/application.conf` field. Here are some current examples as used by the SDKMAN API:
 
     services {
       "release" = {
-        url = "http://localhost:8080/release"
+        url = "http://somehost:8080/release"
         url = ${?RELEASE_ENDPOINT_API_URL}
         serviceToken = "default_token"
         serviceToken = ${?RELEASE_API_TOKEN}
       }
       "default" = {
-        url = "http://localhost:8080/default"
+        url = "http://somehost:8080/default"
         url = ${?DEFAULT_ENDPOINT_API_URL}
         serviceToken = "default_token"
         serviceToken = ${?RELEASE_API_TOKEN}
       }
       "announce/struct" = {
-        url = "http://localhost:8081/announce/struct"
+        url = "http://somehost:8081/announce/struct"
         url = ${?BROADCAST_STRUCT_API_URL}
         serviceToken = "default_token"
         serviceToken = ${?BROADCAST_API_TOKEN}
