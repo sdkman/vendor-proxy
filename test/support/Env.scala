@@ -31,5 +31,6 @@ object Env extends ScalaDsl {
 
   Before { s =>
     Db.truncateVendorsTable()
+    WireMock.reset()
   }
 }

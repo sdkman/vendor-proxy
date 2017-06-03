@@ -10,11 +10,6 @@ import utils.{ConsumerMarshalling, ErrorMarshalling}
 
 class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshalling with ErrorMarshalling {
 
-  After() { scenario =>
-    Db.truncateVendorsTable()
-    WireMock.reset()
-  }
-
   val ConsumerTokenPattern = """^[a-f0-9]{64}$""".r
 
   When("""^the Create Consumer endpoint (.*) is posted a request:$""") { (endpoint: String, json: String) =>
