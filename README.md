@@ -2,7 +2,6 @@
 
 This microservice can be used to proxy and secure multiple other microservices. At the moment, the service provides lightweight Authentication and Authorisation.
 
-
 ###Consumer Authentication
 
 It acts as a proxy, searching for the presence of two request headers:
