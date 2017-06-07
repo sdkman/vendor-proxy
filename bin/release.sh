@@ -16,8 +16,8 @@ git checkout -b "$BRANCH"
 
 #update version
 sed -i "s/1.0.0-SNAPSHOT/$VERSION/g" conf/application.conf
-sed -i "s/1.0.0-SNAPSHOT/$VERSION/g" .travis.yml
-git add conf/application.conf .travis.yml
+sed -i "s/1.0.0-SNAPSHOT/$VERSION/g" docker-compose.yml
+git add conf/application.conf docker-compose.yml
 git commit -m "Update version of $BRANCH to $VERSION"
 
 #push branch
