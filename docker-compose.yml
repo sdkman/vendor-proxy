@@ -8,6 +8,7 @@ services:
     ports:
       - "9000:9000"
     depends_on:
+      - postgres-init
       - postgres
       - wiremock
 
@@ -27,6 +28,16 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_DB: "sdkman"
 
+  postgres-init:
+    container_name: postgres_init
+    image: alpine:latest
+    depends_on:
+      - postgres
+    volumes:
+      - $PWD/wait-for-it.sh:/opt/docker/wait-for-it.sh
+    command: sh -c "/opt/docker/wait-for-it.sh -t 60 'postgres:5432'"
+
+
   vendor_proxy_acc_tests:
     image: nightscape/docker-sbt:latest
     working_dir: /work
@@ -41,7 +52,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/bin/docker
     depends_on:
-      - postgres
+      - postgres-init
       - wiremock
       - vendor-proxy
     command: ./sbtw test
