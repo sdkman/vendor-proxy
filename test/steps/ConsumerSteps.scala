@@ -13,7 +13,7 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
   WireMock.configureFor(SERVICE_UP_HOST, SERVICE_UP_PORT)
 
   Before { s =>
-    Db.recreateVendorsTable()
+    Db.cleanVendorsTable()
     WireMock.reset()
   }
 

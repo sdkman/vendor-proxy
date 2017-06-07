@@ -20,7 +20,7 @@ libraryDependencies ++= Seq(
   ws,
   "org.postgresql" % "postgresql" % "9.4.1211",
   "com.typesafe.play" %% "play-slick" % "2.0.0",
-  "org.flywaydb" %% "flyway-play" % "3.1.0" % Test,
+  "org.flywaydb" %% "flyway-play" % "3.1.0",
   "org.scalatest" %% "scalatest" % "3.0.0" % Test,
   "info.cukes" %% "cucumber-scala" % "1.2.5" % Test,
   "info.cukes" % "cucumber-junit" % "1.2.5" % Test,

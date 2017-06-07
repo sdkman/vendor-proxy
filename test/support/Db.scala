@@ -8,7 +8,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-object Db extends DatabaseConnection with DbMigration {
+object Db extends DatabaseConnection {
 
   case class Vendor(id: String, name: String, token: String)
 
@@ -22,7 +22,7 @@ object Db extends DatabaseConnection with DbMigration {
     def * = (id, name, token) <> (Vendor.tupled, Vendor.unapply)
   }
 
-  def recreateVendorsTable() = reloadSchema()
+  def cleanVendorsTable() = exec(truncateVendorsTableAction)
 
   def vendorExists(vendor: String): Boolean = exec(vendorExistsAction(vendor)).isDefined
 
@@ -36,6 +36,8 @@ object Db extends DatabaseConnection with DbMigration {
 
 
   private lazy val VendorsTable = TableQuery[VendorsTable]
+
+  private val truncateVendorsTableAction = sqlu"TRUNCATE TABLE vendors"
 
   private def vendorExistsAction(name: String) = VendorsTable.filter(_.name === name).result.headOption
 

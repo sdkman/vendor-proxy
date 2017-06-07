@@ -41,5 +41,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/bin/docker
     depends_on:
+      - postgres
+      - wiremock
       - vendor-proxy
     command: ./sbtw test
