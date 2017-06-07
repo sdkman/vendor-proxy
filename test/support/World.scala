@@ -1,15 +1,11 @@
 package support
 
-import com.github.tomakehurst.wiremock.client.WireMock
-
 import scala.collection.mutable
 
 object World {
 
   val SERVICE_UP_HOST = "wiremock"
   val SERVICE_UP_PORT = 8080
-
-  WireMock.configureFor(SERVICE_UP_HOST, SERVICE_UP_PORT)
 
   val statusCodes = Map(
     "CREATED" -> 201,

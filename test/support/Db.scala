@@ -8,7 +8,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-object Db {
+object Db extends DatabaseConnection with DbMigration {
 
   case class Vendor(id: String, name: String, token: String)
 
@@ -22,7 +22,7 @@ object Db {
     def * = (id, name, token) <> (Vendor.tupled, Vendor.unapply)
   }
 
-  def truncateVendorsTable() = exec(truncateVendorsTableAction)
+  def recreateVendorsTable() = reloadSchema()
 
   def vendorExists(vendor: String): Boolean = exec(vendorExistsAction(vendor)).isDefined
 
@@ -36,10 +36,6 @@ object Db {
 
 
   private lazy val VendorsTable = TableQuery[VendorsTable]
-
-  private lazy val database = Database.forURL("jdbc:postgresql://postgres:5432/sdkman_vendor_proxy", "postgres", "")
-
-  private val truncateVendorsTableAction = sqlu"TRUNCATE TABLE vendors"
 
   private def vendorExistsAction(name: String) = VendorsTable.filter(_.name === name).result.headOption
 

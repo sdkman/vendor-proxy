@@ -5,13 +5,15 @@ import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
 import play.api.libs.json.Json
 import support.World._
-import support.{Db, World, Http}
+import support.{Db, Http, World}
 import utils.{ConsumerMarshalling, ErrorMarshalling}
 
 class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshalling with ErrorMarshalling {
 
+  WireMock.configureFor(SERVICE_UP_HOST, SERVICE_UP_PORT)
+
   Before { s =>
-    Db.truncateVendorsTable()
+    Db.recreateVendorsTable()
     WireMock.reset()
   }
 
