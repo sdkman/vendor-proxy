@@ -18,6 +18,9 @@ script:
   - ./sbtw clean compile docker:publishLocal
   - ./compose run --rm vendor_proxy_acc_tests
 
+after_script:
+  - ./compose down
+
 after_success:
   - sbt docker:publish
 
