@@ -24,7 +24,7 @@ class ConsumerController @Inject()(val cr: ConsumerRepo)(implicit val env: Vendo
       val consumer = Consumers.fromName(consumerReq.consumer)
       cr.persist(consumer.copy(token = sha256(consumer.token))).map { c =>
           Logger.info(s"Successfully persisted Consumer: ${c.name} id: ${c.id}")
-          Created(toJson(Response(c.id, c.token, c.name)))
+          Created(toJson(Response(consumer.id, consumer.token, consumer.name)))
       }.recover {
         case e: PSQLException =>
           val message = s"Could not persist Consumer: ${e.getServerErrorMessage}"

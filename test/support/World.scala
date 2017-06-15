@@ -18,6 +18,8 @@ object World {
 
   var adminToken: String = "invalid"
 
+  var issuedToken = "invalid"
+
   val headers = mutable.Map[String, String]()
 
   var responseCode = 0

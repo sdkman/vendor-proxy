@@ -6,7 +6,7 @@ import org.scalatest.Matchers
 import play.api.libs.json.Json
 import support.World._
 import support.{Db, Http, World}
-import utils.{ConsumerMarshalling, ErrorMarshalling}
+import utils.{ConsumerMarshalling, ErrorMarshalling, TokenGenerator}
 
 class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshalling with ErrorMarshalling {
 
@@ -29,26 +29,26 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
     responseCode shouldBe statusCodes(status)
   }
 
-  Then("""^the payload contains a consumerKey of value (.*)$""") { (value: String) =>
+  Then("""^the response contains a consumerKey of value (.*)$""") { (value: String) =>
     Json.parse(responseBody).validate[Response].asOpt match {
       case Some(actual) => actual.consumerKey shouldBe value
       case None => fail("No valid response found.")
     }
   }
 
-  Then("""^the payload contains a valid consumerToken$""") { () =>
-    val actual = Json.parse(responseBody).as[Response]
-    actual.consumerToken should fullyMatch regex ConsumerTokenPattern
+  Then("""^the response contains a valid consumerToken$""") { () =>
+    World.issuedToken = Json.parse(responseBody).as[Response].consumerToken
+    World.issuedToken should fullyMatch regex ConsumerTokenPattern
   }
 
-  Then("""the payload contains a status of value (.*)""") { (status: Int) =>
+  Then("""the response contains a status of value (.*)""") { (status: Int) =>
     Json.parse(responseBody).validate[ErrorMessage].asOpt match {
       case Some(actual) => actual.status shouldBe status
       case None => fail("No valid status code found.")
     }
   }
 
-  Then("""the payload contains message (.*)""") { (message: String) =>
+  Then("""the response contains message (.*)""") { (message: String) =>
     Json.parse(responseBody).validate[ErrorMessage].asOpt match {
       case Some(actual) => actual.message should include(message)
       case None => fail("No valid message found.")
@@ -56,8 +56,9 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
   }
 
   Then("""the Consumer (.*) has been persisted""") { (consumer: String) =>
-    Db.vendorExists(consumer) should be
-    true
+    withClue("The consumer was not persisted") {
+      Db.vendorExists(consumer) shouldBe true
+    }
   }
 
   Then("""the persisted Consumer (.*) has consumerKey (.*)""") { (consumer: String, consumerKey: String) =>
@@ -67,11 +68,15 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
     }
   }
 
-  Then("""the persisted Consumer (.*) has a valid consumerToken""") { (consumer: String) =>
+  Then("""the persisted Consumer (.*) has a valid sha256 representation of the consumerToken""") { (consumer: String) =>
     Db.vendorToken(consumer) match {
-      case Some(token) => token should fullyMatch regex ConsumerTokenPattern
-      case None => fail("no consumer found")
+      case Some(token) =>
+        token should fullyMatch regex ConsumerTokenPattern
+        withClue("Issued token was not equal to persisted token") {
+          TokenGenerator.sha256(World.issuedToken) shouldBe token
+        }
+      case None =>
+        fail("no consumer found")
     }
   }
-
 }
