@@ -4,10 +4,11 @@ import scala.collection.mutable
 
 object World {
 
-  val appHost = "http://vendor-proxy:9000"
+  val AppHost = "http://vendor-proxy:9000"
 
-  val SERVICE_UP_HOST = "wiremock"
-  val SERVICE_UP_PORT = 8080
+  val ServiceUpHost = "wiremock"
+
+  val ServiceUpPort = 8080
 
   val statusCodes = Map(
     "OK" -> 200,
@@ -23,10 +24,7 @@ object World {
 
   var issuedToken = "invalid"
 
-  val headers = mutable.Map[String, String](
-    "Content-Type" -> "application/json",
-    "Accept" -> "application/json"
-  )
+  var headers: mutable.Map[String, String] = _
 
   var responseCode = 0
 

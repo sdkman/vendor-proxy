@@ -17,6 +17,8 @@ class ConsumerRepo @Inject()(val dbConfigProvider: DatabaseConfigProvider, val c
 
   def persist(c: Consumer): Future[Consumer] = db.run(ConsumersTable returning ConsumersTable.map(_.id) into ((c, id) => c.copy(id)) += c)
 
+  def deleteByName(name: String): Future[Int] = db.run(ConsumersTable.filter(_.name === name).delete)
+
   private def findConsumer(key: String, token: String): DBIOAction[Option[String], NoStream, Effect.Read] =
     ConsumersTable
       .filter(_.id === key)

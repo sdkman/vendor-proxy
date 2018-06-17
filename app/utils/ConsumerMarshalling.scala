@@ -15,5 +15,9 @@ trait ConsumerMarshalling {
   implicit val createResponseReads = Json.reads[CreateResponse]
 
   implicit val createResponseWrites = Json.writes[CreateResponse]
+
+  implicit val deleteResponseReads = Json.reads[DeleteResponse]
+
+  implicit val deleteResponseWrites = Json.writes[DeleteResponse]
 }
 

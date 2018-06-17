@@ -2,15 +2,21 @@ package steps
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import cucumber.api.scala.{EN, ScalaDsl}
-import support.Db
-import support.World.{SERVICE_UP_HOST, SERVICE_UP_PORT}
+import support.{Db, World}
+import support.World.{ServiceUpHost, ServiceUpPort}
+
+import scala.collection.mutable
 
 class Env extends ScalaDsl with EN {
 
-  WireMock.configureFor(SERVICE_UP_HOST, SERVICE_UP_PORT)
+  WireMock.configureFor(ServiceUpHost, ServiceUpPort)
 
   Before { s =>
     Db.cleanVendorsTable()
     WireMock.reset()
+    World.headers = mutable.Map[String, String](
+      "Content-Type" -> "application/json",
+      "Accept" -> "application/json"
+    )
   }
 }

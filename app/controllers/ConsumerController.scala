@@ -1,14 +1,14 @@
 package controllers
 
 import com.google.inject.Inject
-import domain.{Consumer, Consumers}
+import domain.Consumers
 import org.postgresql.util.PSQLException
 import play.Logger
 import play.api.libs.json.Json.toJson
 import play.api.mvc._
 import repos.ConsumerRepo
 import security.AsAdministrator
-import utils.TokenGenerator.sha256
+import utils.TokenGenerator.{generateConsumerKey, sha256}
 import utils.{ConsumerMarshalling, ErrorMarshalling, VendorProxyConfig}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -38,4 +38,12 @@ class ConsumerController @Inject()(val repo: ConsumerRepo)(implicit val env: Ven
     }
   }
 
+  def delete(name: String) = AsAdministrator(parse.default) { req =>
+    repo.deleteByName(name).map {
+      case 1 =>
+        Ok(toJson(DeleteResponse(generateConsumerKey(name), name, "consumer deleted")))
+      case 0 =>
+        NotFound
+    }
+  }
 }

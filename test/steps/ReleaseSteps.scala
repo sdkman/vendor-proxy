@@ -6,7 +6,7 @@ import org.scalatest.Matchers
 import play.api.libs.json.Json
 import scalaj.http.{Http, HttpOptions}
 import support.World
-import support.World.appHost
+import support.World.AppHost
 
 class ReleaseSteps extends ScalaDsl with EN with Matchers {
 
@@ -15,7 +15,7 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
   }
 
   When("""^posting JSON on the (.*) endpoint:$""") { (endpoint: String, payload: String) =>
-    val response = Http(appHost + endpoint)
+    val response = Http(AppHost + endpoint)
       .postData(payload.stripMargin)
       .headers(World.headers.toMap)
       .option(HttpOptions.connTimeout(10000))
