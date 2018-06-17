@@ -13,10 +13,10 @@ object AsAdministrator extends ErrorMarshalling {
 
   val adminTokenHeaderNames = Seq("admin_token", "Admin-Token")
 
-  def apply(parser: BodyParser[JsValue])(f: Request[JsValue] => Future[Result])(implicit config: VendorProxyConfig) =
+  def apply(parser: BodyParser[JsValue])(f: Request[JsValue] => Future[Result])(implicit config: VendorProxyConfig): Action[JsValue] =
     Action.async(parser)(secured(f))
 
-  def secured[T](f: Request[T] => Future[Result])(implicit env: VendorProxyConfig) = { (req: Request[T]) =>
+  def secured[T](f: Request[T] => Future[Result])(implicit env: VendorProxyConfig): Request[T] => Future[Result] = { req: Request[T] =>
     adminTokenHeaderNames.flatMap(req.headers.get).headOption.fold(forbiddenF) {
       case s if s == env.secret => f(req)
       case _ => forbiddenF
@@ -30,13 +30,13 @@ object AsConsumer extends ErrorMarshalling {
 
   val consumerTokenHeaderNames = Seq("consumer_token", "Consumer-Token")
 
-  def apply(parser: BodyParser[JsValue])(f: (Request[JsValue], String) => Future[Result])(implicit cr: ConsumerRepo) =
+  def apply(parser: BodyParser[JsValue])(f: (Request[JsValue], String) => Future[Result])(implicit cr: ConsumerRepo): Action[JsValue] =
     Action.async(parser)(secured(f))
 
-  def secured[T](fun: (Request[T], String) => Future[Result])(implicit cr: ConsumerRepo) = { (req: Request[T]) =>
+  def secured[T](fun: (Request[T], String) => Future[Result])(implicit cr: ConsumerRepo): Request[T] => Future[Result] = { req: Request[T] =>
     consumerKeyHeaderNames.flatMap(req.headers.get).headOption.fold(forbiddenF) { key =>
       consumerTokenHeaderNames.flatMap(req.headers.get).headOption.fold(forbiddenF) { token =>
-        cr.findByKeyAndToken(key, sha256(token)).flatMap { (consumerNameO: Option[String]) =>
+        cr.findByKeyAndToken(key, sha256(token)).flatMap { consumerNameO: Option[String] =>
           consumerNameO.map(name => fun(req, name)).getOrElse(forbiddenF)
         }
       }
