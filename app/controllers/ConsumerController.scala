@@ -14,17 +14,17 @@ import utils.{ConsumerMarshalling, ErrorMarshalling, VendorProxyConfig}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ConsumerController @Inject()(val cr: ConsumerRepo)(implicit val env: VendorProxyConfig)
+class ConsumerController @Inject()(val repo: ConsumerRepo)(implicit val env: VendorProxyConfig)
   extends Controller
     with ConsumerMarshalling
     with ErrorMarshalling {
 
   def create = AsAdministrator(parse.json) { req =>
-    req.body.validate[Request].asOpt.fold(Future(BadRequest(badRequestMsg))) { consumerReq =>
+    req.body.validate[CreateRequest].asOpt.fold(Future(BadRequest(badRequestMsg))) { consumerReq =>
       val consumer = Consumers.fromName(consumerReq.consumer)
-      cr.persist(consumer.copy(token = sha256(consumer.token))).map { c =>
+      repo.persist(consumer.copy(token = sha256(consumer.token))).map { c =>
           Logger.info(s"Successfully persisted Consumer: ${c.name} id: ${c.id}")
-          Created(toJson(Response(consumer.id, consumer.token, consumer.name)))
+          Created(toJson(CreateResponse(consumer.id, consumer.token, consumer.name)))
       }.recover {
         case e: PSQLException =>
           val message = s"Could not persist Consumer: ${e.getServerErrorMessage}"

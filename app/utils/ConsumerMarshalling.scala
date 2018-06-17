@@ -3,14 +3,17 @@ package utils
 import play.api.libs.json.Json
 
 trait ConsumerMarshalling {
-  case class Request(consumer: String)
 
-  case class Response(consumerKey: String, consumerToken: String, name: String)
+  case class CreateRequest(consumer: String)
 
-  implicit val requestReads = Json.reads[Request]
+  case class CreateResponse(consumerKey: String, consumerToken: String, name: String)
 
-  implicit val responseReads = Json.reads[Response]
+  case class DeleteResponse(consumerKey: String, name: String, message: String)
 
-  implicit val responseWrites = Json.writes[Response]
+  implicit val createRequestReads = Json.reads[CreateRequest]
+
+  implicit val createResponseReads = Json.reads[CreateResponse]
+
+  implicit val createResponseWrites = Json.writes[CreateResponse]
 }
 
