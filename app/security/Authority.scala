@@ -1,10 +1,9 @@
 package security
 
-import play.api.libs.json.JsValue
 import play.api.mvc._
 import repos.ConsumerRepo
 import utils.TokenGenerator.sha256
-import utils.{VendorProxyConfig, ErrorMarshalling}
+import utils.{ErrorMarshalling, VendorProxyConfig}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -13,7 +12,7 @@ object AsAdministrator extends ErrorMarshalling {
 
   val adminTokenHeaderNames = Seq("admin_token", "Admin-Token")
 
-  def apply(parser: BodyParser[JsValue])(f: Request[JsValue] => Future[Result])(implicit config: VendorProxyConfig): Action[JsValue] =
+  def apply[T](parser: BodyParser[T])(f: Request[T] => Future[Result])(implicit config: VendorProxyConfig): Action[T] =
     Action.async(parser)(secured(f))
 
   def secured[T](f: Request[T] => Future[Result])(implicit env: VendorProxyConfig): Request[T] => Future[Result] = { req: Request[T] =>
@@ -30,7 +29,7 @@ object AsConsumer extends ErrorMarshalling {
 
   val consumerTokenHeaderNames = Seq("consumer_token", "Consumer-Token")
 
-  def apply(parser: BodyParser[JsValue])(f: (Request[JsValue], String) => Future[Result])(implicit cr: ConsumerRepo): Action[JsValue] =
+  def apply[T](parser: BodyParser[T])(f: (Request[T], String) => Future[Result])(implicit cr: ConsumerRepo): Action[T] =
     Action.async(parser)(secured(f))
 
   def secured[T](fun: (Request[T], String) => Future[Result])(implicit cr: ConsumerRepo): Request[T] => Future[Result] = { req: Request[T] =>
