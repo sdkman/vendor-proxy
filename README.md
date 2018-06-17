@@ -1,14 +1,14 @@
 ##SDKMAN! Secure Proxy
 
-This microservice can be used to proxy and secure multiple other microservices. At the moment, the service provides lightweight Authentication and Authorisation.
+This microservice can be used to proxy and secure other microservices. At the moment, the service provides lightweight Authentication and Authorisation.
 
 ###Consumer Authentication
 
 It acts as a proxy, searching for the presence of two request headers:
 
-`consmer_key` : a unique identifier per Consumer.
+`Consmer-Key` : a unique identifier per Consumer.
 
-`consumer_token` : a SHA-256 hash generated for the Consumer
+`Consumer-Token` : a SHA-256 hash generated for the Consumer
 
 ###Setting up Services to Proxy
 
@@ -52,7 +52,17 @@ and returns a JSON response:
       "name": "groovy"
     }
 
-The endpoint is itself secured, and looks for the presence of an `Admin-Token` request header. This value of this can be set by providing an `ADMIN_TOKEN` environment variable, which defaults to `default_token`.
+###Revoke existing Consumer
+
+To revoke a consumer, a DELETE request can be made on the /consumer/{name} endpoint. This returns a JSON response:
+
+    {
+      "consumerKey": "5f202e7ab75f00af194c61cc07ae6b0c",
+      "name": "groovy",
+      "message": "consumer revoked"
+    }
+
+The endpoints themselves are secured, and looks for the presence of an `Admin-Token` request header. The value of this can be set by providing an `ADMIN_TOKEN` environment variable, which defaults to `default_token`.
 
 Once the Consumer Key and Token have been obtained, they can be used to make subsequent calls to proxied endpoints. All these calls will _require `Consumer-Key` and `Consumer-Token` headers to be set respectively for each call_.
 
