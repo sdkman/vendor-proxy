@@ -38,7 +38,7 @@ class ConsumerController @Inject()(val repo: ConsumerRepo)(implicit val env: Ven
     }
   }
 
-  def delete(name: String) = AsAdministrator(parse.default) { req =>
+  def revoke(name: String) = AsAdministrator(parse.default) { req =>
     repo.deleteByName(name).map {
       case 1 =>
         Ok(toJson(DeleteResponse(generateConsumerKey(name), name, "consumer deleted")))
