@@ -4,7 +4,7 @@ services:
 
   vendor-proxy:
     container_name: vendor-proxy
-    image: sdkman/vendor-proxy:1.0.0-SNAPSHOT
+    image: sdkman/vendor-proxy:2.3.0
     ports:
       - "9000:9000"
     depends_on:
