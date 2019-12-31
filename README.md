@@ -1,8 +1,8 @@
-##SDKMAN! Secure Proxy
+## SDKMAN! Secure Proxy
 
 This microservice can be used to proxy and secure other microservices. At the moment, the service provides lightweight Authentication and Authorisation.
 
-###Consumer Authentication
+### Consumer Authentication
 
 It acts as a proxy, searching for the presence of two request headers:
 
@@ -10,7 +10,7 @@ It acts as a proxy, searching for the presence of two request headers:
 
 `Consumer-Token` : a SHA-256 hash generated for the Consumer
 
-###Setting up Services to Proxy
+### Setting up Services to Proxy
 
 The application hinges on configuration to be set up in the `conf/application.conf` field. Here are some current examples as used by the SDKMAN API:
 
@@ -38,9 +38,9 @@ The application hinges on configuration to be set up in the `conf/application.co
 In these configuration blocks per service, we have opted for using environment variables, although this is not a necessity. We have also provied default values for each environment variable. Each configuratoin block also specifies an `serviceToken` which will be propagated to the underlying microservice as an `Service-Token` request header. Provided your microservice communications use SSL, your microservices should be secure.
 
 
-###Creating new Consumers
+### Creating new Consumers
 
-An endpoint has also been provided for creating new consumers. This endpoint simply takes a JSON POST on '/consumer' of:
+An endpoint has also been provided for creating new consumers. This endpoint simply takes a JSON `POST` on `/consumer` of:
 
     {"consumer": "groovy"}
 
@@ -52,9 +52,9 @@ and returns a JSON response:
       "name": "groovy"
     }
 
-###Revoke existing Consumer
+### Revoke existing Consumer
 
-To revoke a consumer, a DELETE request can be made on the /consumer/{name} endpoint. This returns a JSON response:
+To revoke a consumer, a `DELETE` request can be made on the `/consumer/{name}` endpoint. This returns a JSON response:
 
     {
       "consumerKey": "5f202e7ab75f00af194c61cc07ae6b0c",
