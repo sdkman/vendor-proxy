@@ -3,7 +3,9 @@ sudo: required
 services:
   - docker
 
-language: scala
+language: java
+
+jdk: openjdk8
 
 scala:
   - 2.11.8
