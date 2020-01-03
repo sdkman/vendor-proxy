@@ -3,8 +3,8 @@ package repos
 import com.google.inject.Inject
 import domain.Consumer
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import slick.driver.JdbcProfile
-import slick.driver.PostgresDriver.api._
+import slick.jdbc.JdbcProfile
+import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 import utils.VendorProxyConfig
 

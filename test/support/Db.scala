@@ -1,6 +1,6 @@
 package support
 
-import slick.driver.PostgresDriver.api._
+import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 import utils.TokenGenerator.generateConsumerKey
 

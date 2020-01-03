@@ -6,13 +6,13 @@ import play.api.Configuration
 @Singleton
 class VendorProxyConfig @Inject()(val configuration: Configuration) {
 
-  def apiUrl(service: String) = configuration.getString(s"services.$service.url").getOrElse("invalid")
+  def apiUrl(service: String) = configuration.get[String](s"services.$service.url")
 
-  def serviceToken(service: String) = configuration.getString(s"services.$service.serviceToken").getOrElse("invalid")
+  def serviceToken(service: String) = configuration.get[String](s"services.$service.serviceToken")
 
-  def secret = configuration.getString("admin.token").getOrElse("invalid")
+  def secret = configuration.get[String]("admin.token")
 
-  def consumersTable = configuration.getString("consumers.table").getOrElse("consumers")
+  def consumersTable = configuration.get[String]("consumers.table")
 
-  def version = configuration.getString("application.version").getOrElse("version not found")
+  def version = configuration.get[String]("application.version")
 }

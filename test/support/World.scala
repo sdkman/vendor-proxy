@@ -4,9 +4,9 @@ import scala.collection.mutable
 
 object World {
 
-  val AppHost = "http://vendor-proxy:9000"
+  val AppHost = "http://localhost:9000"
 
-  val ServiceUpHost = "wiremock"
+  val ServiceUpHost = "localhost"
 
   val ServiceUpPort = 8080
 

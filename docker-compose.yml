@@ -36,20 +36,3 @@ services:
       POSTGRES_USER: "vendors"
       POSTGRES_DB: "vendors"
 
-  vendor_proxy_acc_tests:
-    image: nightscape/docker-sbt:latest
-    working_dir: /work
-    user: ${USER_ID}
-    environment:
-      SBT_CACHE: "/sbt"
-      IVY_CACHE: "/ivy2"
-    volumes:
-      - ${PWD}:/work
-      - ${HOME}/.sbt:/sbt
-      - ${HOME}/.ivy2:/ivy2
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /usr/bin/docker:/bin/docker
-    depends_on:
-      - wiremock
-      - vendor-proxy
-    command: ./sbtw test

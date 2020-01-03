@@ -1,7 +1,7 @@
 package steps
 
 import cucumber.api.scala.{EN, ScalaDsl}
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.Json
 import scalaj.http.{Http, HttpOptions}
 import support.World._

@@ -1,7 +1,7 @@
 package steps
 
 import cucumber.api.scala.{EN, ScalaDsl}
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.concurrent.ScalaFutures
 import support.{Db, World}
 import utils.TokenGenerator
