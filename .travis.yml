@@ -5,10 +5,10 @@ services:
 
 language: java
 
-jdk: openjdk8
+jdk: openjdk11
 
 scala:
-  - 2.11.8
+  - 2.12.10
 
 before_install:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
@@ -18,7 +18,8 @@ before_script:
 
 script:
   - ./sbtw clean compile docker:publishLocal
-  - ./compose run --rm vendor_proxy_acc_tests
+  - ./compose up -d
+  - ./sbtw test
 
 after_script:
   - ./compose down
