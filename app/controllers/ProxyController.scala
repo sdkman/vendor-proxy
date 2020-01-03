@@ -12,17 +12,19 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.mvc.ControllerComponents
 import play.api.mvc.AbstractController
 
-class ProxyController @Inject()(val config: VendorProxyConfig,
-                                val wSClient: WSClient,
-                                val cc: ControllerComponents,
-                                implicit val cr: ConsumerRepo)
-  extends AbstractController(cc)
+class ProxyController @Inject() (
+    val config: VendorProxyConfig,
+    val wSClient: WSClient,
+    val cc: ControllerComponents,
+    implicit val cr: ConsumerRepo
+) extends AbstractController(cc)
     with RequestHeaders
     with Logging {
 
   def execute(service: String) = AsConsumer(parse.json, controllerComponents.actionBuilder) { (request, consumerName) =>
     logger.info(s"Proxy $service on behalf of $consumerName")
-    wSClient.url(config.apiUrl(service))
+    wSClient
+      .url(config.apiUrl(service))
       .withHttpHeaders(tokenHeader(service), consumerHeader(consumerName))
       .withMethod(request.method)
       .withBody(request.body)

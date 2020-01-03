@@ -9,20 +9,25 @@ import utils.{ErrorMarshalling, VendorProxyConfig}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class HealthController @Inject()(val config: VendorProxyConfig, val dbConfigProvider: DatabaseConfigProvider, val cc: ControllerComponents)
-  extends AbstractController(cc)
+class HealthController @Inject() (
+    val config: VendorProxyConfig,
+    val dbConfigProvider: DatabaseConfigProvider,
+    val cc: ControllerComponents
+) extends AbstractController(cc)
     with HasDatabaseConfigProvider[JdbcProfile]
     with ErrorMarshalling {
 
   val alive = Action.async { request =>
     import slick.jdbc.DB2Profile.api._
-    db.run(sql"SELECT 1".as[(String)]).map { (maybe: Vector[String]) =>
-      maybe.headOption.map { result =>
-        Ok(obj("status" -> 200, "alive" -> true, "message" -> s"result from test query: $result"))
-      }.get
-    }.recover {
-      case e: Throwable => ServiceUnavailable(serviceUnavailableMsg(e))
-    }
+    db.run(sql"SELECT 1".as[(String)])
+      .map { (maybe: Vector[String]) =>
+        maybe.headOption.map { result =>
+          Ok(obj("status" -> 200, "alive" -> true, "message" -> s"result from test query: $result"))
+        }.get
+      }
+      .recover {
+        case e: Throwable => ServiceUnavailable(serviceUnavailableMsg(e))
+      }
   }
 
   val info = Action { request =>

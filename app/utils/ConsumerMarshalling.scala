@@ -20,4 +20,3 @@ trait ConsumerMarshalling {
 
   implicit val deleteResponseWrites = Json.writes[DeleteResponse]
 }
-

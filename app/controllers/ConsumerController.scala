@@ -14,8 +14,9 @@ import utils.{ConsumerMarshalling, ErrorMarshalling, VendorProxyConfig}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ConsumerController @Inject()(val repo: ConsumerRepo, cc: ControllerComponents)(implicit val env: VendorProxyConfig)
-  extends AbstractController(cc)
+class ConsumerController @Inject() (val repo: ConsumerRepo, cc: ControllerComponents)(
+    implicit val env: VendorProxyConfig
+) extends AbstractController(cc)
     with ConsumerMarshalling
     with ErrorMarshalling
     with Logging {
@@ -23,19 +24,22 @@ class ConsumerController @Inject()(val repo: ConsumerRepo, cc: ControllerCompone
   def create = AsAdministrator(parse.json, controllerComponents.actionBuilder) { req =>
     req.body.validate[CreateRequest].asOpt.fold(Future(BadRequest(badRequestMsg))) { consumerReq =>
       val consumer = Consumers.fromName(consumerReq.consumer)
-      repo.persist(consumer.copy(token = sha256(consumer.token))).map { c =>
-        logger.info(s"Successfully persisted Consumer: ${c.name} id: ${c.id}")
-        Created(toJson(CreateResponse(consumer.id, consumer.token, consumer.name)))
-      }.recover {
-        case e: PSQLException =>
-          val message = s"Could not persist Consumer: ${e.getServerErrorMessage}"
-          logger.warn(message)
-          Conflict(conflictMsg(message))
-        case e: Throwable =>
-          val message = s"Error on persisting Consumer: ${consumer.name} - err:${e.getMessage}"
-          logger.error(message)
-          InternalServerError(internalServerErrorMsg(e))
-      }
+      repo
+        .persist(consumer.copy(token = sha256(consumer.token)))
+        .map { c =>
+          logger.info(s"Successfully persisted Consumer: ${c.name} id: ${c.id}")
+          Created(toJson(CreateResponse(consumer.id, consumer.token, consumer.name)))
+        }
+        .recover {
+          case e: PSQLException =>
+            val message = s"Could not persist Consumer: ${e.getServerErrorMessage}"
+            logger.warn(message)
+            Conflict(conflictMsg(message))
+          case e: Throwable =>
+            val message = s"Error on persisting Consumer: ${consumer.name} - err:${e.getMessage}"
+            logger.error(message)
+            InternalServerError(internalServerErrorMsg(e))
+        }
     }
   }
 

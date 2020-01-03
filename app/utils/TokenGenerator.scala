@@ -33,7 +33,7 @@ object TokenGenerator {
   // 45 was selected because System.nanoTime().toString returns
   // 19 characters.  45 + 19 = 64.  Therefore we are guaranteed
   // at least 64 characters (bytes) to use in hash, to avoid MD5 collision < 64
-  val TOKEN_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_.-"
+  val TOKEN_CHARS  = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_.-"
   val secureRandom = new SecureRandom()
 
   private def toHex(bytes: Array[Byte]): String = bytes.map("%02x".format(_)).mkString("")

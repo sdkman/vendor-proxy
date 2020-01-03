@@ -10,12 +10,13 @@ import utils.VendorProxyConfig
 
 import scala.concurrent.Future
 
-class ConsumerRepo @Inject()(val dbConfigProvider: DatabaseConfigProvider, val config: VendorProxyConfig)
-  extends HasDatabaseConfigProvider[JdbcProfile] {
+class ConsumerRepo @Inject() (val dbConfigProvider: DatabaseConfigProvider, val config: VendorProxyConfig)
+    extends HasDatabaseConfigProvider[JdbcProfile] {
 
   lazy val ConsumersTable = TableQuery[ConsumersTable]
 
-  def persist(c: Consumer): Future[Consumer] = db.run(ConsumersTable returning ConsumersTable.map(_.id) into ((c, id) => c.copy(id)) += c)
+  def persist(c: Consumer): Future[Consumer] =
+    db.run(ConsumersTable returning ConsumersTable.map(_.id) into ((c, id) => c.copy(id)) += c)
 
   def deleteByName(name: String): Future[Int] = db.run(ConsumersTable.filter(_.name === name).delete)
 
@@ -24,7 +25,8 @@ class ConsumerRepo @Inject()(val dbConfigProvider: DatabaseConfigProvider, val c
       .filter(_.id === key)
       .filter(_.token === token)
       .map(_.name)
-      .result.headOption
+      .result
+      .headOption
 
   def findByKeyAndToken(key: String, token: String): Future[Option[String]] = db.run(findConsumer(key, token))
 

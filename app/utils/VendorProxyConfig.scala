@@ -4,7 +4,7 @@ import com.google.inject.{Inject, Singleton}
 import play.api.Configuration
 
 @Singleton
-class VendorProxyConfig @Inject()(val configuration: Configuration) {
+class VendorProxyConfig @Inject() (val configuration: Configuration) {
 
   def apiUrl(service: String) = configuration.get[String](s"services.$service.url")
 
