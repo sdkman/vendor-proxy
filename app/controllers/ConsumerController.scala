@@ -20,7 +20,7 @@ class ConsumerController @Inject()(val repo: ConsumerRepo, cc: ControllerCompone
     with ErrorMarshalling
     with Logging {
 
-  def create = AsAdministrator(parse.json, controllerComponents) { req =>
+  def create = AsAdministrator(parse.json, controllerComponents.actionBuilder) { req =>
     req.body.validate[CreateRequest].asOpt.fold(Future(BadRequest(badRequestMsg))) { consumerReq =>
       val consumer = Consumers.fromName(consumerReq.consumer)
       repo.persist(consumer.copy(token = sha256(consumer.token))).map { c =>
@@ -39,7 +39,7 @@ class ConsumerController @Inject()(val repo: ConsumerRepo, cc: ControllerCompone
     }
   }
 
-  def revoke(name: String) = AsAdministrator(parse.default, controllerComponents) { req =>
+  def revoke(name: String) = AsAdministrator(parse.default, controllerComponents.actionBuilder) { req =>
     repo.deleteByName(name).map {
       case 1 =>
         Ok(toJson(DeleteResponse(generateConsumerKey(name), name, "consumer deleted")))
