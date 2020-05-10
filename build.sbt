@@ -38,5 +38,5 @@ dockerBaseImage := "openjdk:11"
 dockerExposedPorts ++= Seq(9000)
 
 javaOptions in Universal ++= Seq(
-  "-Dpidfile.path=/dev/null"
+  "-J-Xms128m -J-Xmx224m -Dpidfile.path=/dev/null"
 )
