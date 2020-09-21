@@ -3,12 +3,7 @@ sudo: required
 services:
   - docker
 
-language: java
-
-jdk: openjdk11
-
-scala:
-  - 2.12.10
+language: scala
 
 before_install:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
@@ -17,9 +12,9 @@ before_script:
   - sudo /etc/init.d/postgresql stop
 
 script:
-  - ./sbtw clean compile docker:publishLocal
+  - sbt clean compile docker:publishLocal
   - ./compose up -d
-  - ./sbtw test
+  - sbt test
 
 after_script:
   - ./compose down
