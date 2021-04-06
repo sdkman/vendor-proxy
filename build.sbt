@@ -34,7 +34,7 @@ libraryDependencies ++= Seq(
 unmanagedResourceDirectories in Test += baseDirectory.value / "features"
 
 packageName in Docker := "sdkman/vendor-proxy"
-dockerBaseImage := "openjdk:11"
+dockerBaseImage := "adoptopenjdk/openjdk11:jdk-11.0.10_9-debian-slim"
 dockerExposedPorts ++= Seq(9000)
 
 javaOptions in Universal ++= Seq(
