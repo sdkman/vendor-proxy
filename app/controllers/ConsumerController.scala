@@ -26,8 +26,8 @@ class ConsumerController @Inject() (val repo: ConsumerRepo, cc: ControllerCompon
       val consumer = Consumers.fromName(consumerReq.consumer)
       repo
         .persist(consumer.copy(token = sha256(consumer.token)))
-        .map { c =>
-          logger.info(s"Successfully persisted Consumer: ${c.name} id: ${c.id}")
+        .map { id =>
+          logger.info(s"Successfully persisted Consumer: ${consumer.name} with id: $id")
           Created(toJson(CreateResponse(consumer.id, consumer.token, consumer.name)))
         }
         .recover {
