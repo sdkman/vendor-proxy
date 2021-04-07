@@ -1,9 +1,12 @@
 package support
 
+import slick.jdbc.{GetResult, SetParameter}
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 import utils.TokenGenerator.generateConsumerKey
 
+import java.sql.Types
+import java.util.UUID
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -11,16 +14,6 @@ import scala.language.postfixOps
 object Db extends DatabaseConnection {
 
   case class Vendor(id: String, name: String, token: String)
-
-  class VendorsTable(tag: Tag) extends Table[Vendor](tag, "vendors") {
-    def id = column[String]("id")
-
-    def name = column[String]("name")
-
-    def token = column[String]("token")
-
-    def * = (id, name, token) <> (Vendor.tupled, Vendor.unapply)
-  }
 
   def cleanVendorsTable() = exec(truncateVendorsTableAction)
 
@@ -34,18 +27,35 @@ object Db extends DatabaseConnection {
 
   def exec[T](action: DBIO[T]): T = Await.result(database.run(action), 2 seconds)
 
+  private implicit def helpersSlickGetResultUUID: GetResult[UUID] =
+    GetResult(r => r.nextObject.asInstanceOf[UUID])
 
-  private lazy val VendorsTable = TableQuery[VendorsTable]
+  private implicit def slickSetParameterUUID: SetParameter[UUID] =
+    SetParameter { case (v, pp) => pp.setObject(v, Types.OTHER) }
 
-  private val truncateVendorsTableAction = sqlu"TRUNCATE TABLE vendors"
+  private val truncateVendorsTableAction = sqlu"TRUNCATE TABLE credentials CASCADE "
 
-  private def vendorExistsAction(name: String) = VendorsTable.filter(_.name === name).result.headOption
+  private def vendorExistsAction(name: String) =
+    sql"SELECT credential_id FROM candidates WHERE name = $name"
+      .as[String]
+      .headOption
 
-  private def vendorKeyAction(name: String) = VendorsTable.filter(_.name === name).map(_.id).result.headOption
+  private def vendorKeyAction(name: String) =
+    sql"SELECT key FROM credentials cred JOIN candidates can on cred.id = can.credential_id WHERE can.name = $name"
+      .as[String]
+      .headOption
 
-  private def vendorTokenAction(name: String) = VendorsTable.filter(_.name === name).map(_.token).result.headOption
+  private def vendorTokenAction(name: String) =
+    sql"SELECT token FROM credentials cred JOIN candidates can on cred.id = can.credential_id WHERE can.name = $name"
+      .as[String]
+      .headOption
 
-  private def saveVendorAction(name: String, token: String) =
-    VendorsTable returning VendorsTable.map(_.id) into ((v, id) => v.copy(id = id)) +=
-      Vendor(generateConsumerKey(name), name, token)
+  private def saveVendorAction(name: String, token: String) = {
+    val credentialId = UUID.randomUUID()
+    val key = generateConsumerKey(name)
+    DBIO.seq(
+      sqlu"INSERT INTO credentials(id, key, token, owner) VALUES ($credentialId, $key, $token, $name)",
+      sqlu"INSERT INTO candidates(credential_id, name) VALUES ($credentialId, $name)"
+    )
+  }
 }

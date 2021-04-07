@@ -3,40 +3,48 @@ package repos
 import com.google.inject.Inject
 import domain.Consumer
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import slick.jdbc.JdbcProfile
 import slick.jdbc.PostgresProfile.api._
-import slick.lifted.TableQuery
-import utils.VendorProxyConfig
+import slick.jdbc.{GetResult, JdbcProfile, SetParameter}
 
+import java.sql.Types
+import java.util.UUID
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ConsumerRepo @Inject() (val dbConfigProvider: DatabaseConfigProvider, val config: VendorProxyConfig)
+class ConsumerRepo @Inject() (val dbConfigProvider: DatabaseConfigProvider)
     extends HasDatabaseConfigProvider[JdbcProfile] {
 
-  lazy val ConsumersTable = TableQuery[ConsumersTable]
+  implicit def helpersSlickGetResultUUID: GetResult[UUID] =
+    GetResult(r => r.nextObject.asInstanceOf[UUID])
 
-  def persist(c: Consumer): Future[Consumer] =
-    db.run(ConsumersTable returning ConsumersTable.map(_.id) into ((c, id) => c.copy(id)) += c)
+  implicit def slickSetParameterUUID: SetParameter[UUID] =
+    SetParameter { case (v, pp) => pp.setObject(v, Types.OTHER) }
 
-  def deleteByName(name: String): Future[Int] = db.run(ConsumersTable.filter(_.name === name).delete)
-
-  private def findConsumer(key: String, token: String): DBIOAction[Option[String], NoStream, Effect.Read] =
-    ConsumersTable
-      .filter(_.id === key)
-      .filter(_.token === token)
-      .map(_.name)
-      .result
-      .headOption
-
-  def findByKeyAndToken(key: String, token: String): Future[Option[String]] = db.run(findConsumer(key, token))
-
-  class ConsumersTable(tag: Tag) extends Table[Consumer](tag, config.consumersTable) {
-    def id = column[String]("id")
-
-    def name = column[String]("name")
-
-    def token = column[String]("token")
-
-    def * = (id, name, token) <> (Consumer.tupled, Consumer.unapply)
+  def persist(c: Consumer): Future[UUID] = {
+    val credentialId = UUID.randomUUID()
+    db.run(
+        for {
+          _ <- sqlu"INSERT INTO credentials(id, key, token, owner) VALUES ($credentialId, ${c.id}, ${c.token}, ${c.name})"
+          _ <- sqlu"INSERT INTO candidates(credential_id, name) VALUES ($credentialId, ${c.name})"
+        } yield ()
+      )
+      .map(_ => credentialId)
   }
+
+  def deleteByName(name: String): Future[Int] = db.run(
+    for {
+      result1 <- sqlu"DELETE FROM candidates WHERE name = $name"
+      result2 <- sqlu"DELETE FROM credentials WHERE owner = $name"
+    } yield result1 & result2
+  )
+
+  def findByKeyAndToken(key: String, token: String): Future[Option[String]] = db.run(
+    sql"""SELECT can.name 
+            FROM credentials cred JOIN candidates can ON cred.id = can.credential_id
+            WHERE cred.key = $key
+            AND cred.token = $token"""
+      .as[String]
+      .headOption
+  )
+
 }
