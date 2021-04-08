@@ -2,7 +2,7 @@ Feature: Delete Consumer
 
   Scenario: An existing Consumer is revoked
     Given the header Admin-Token default_token is presented
-    And an existing Consumer named groovy
+    And an existing Consumer owned by groovy for candidates groovy
     When the /consumers/groovy endpoint receives a DELETE request
     Then the returned status is OK
     And the delete response contains a consumerKey of value 5f202e7ab75f00af194c61cc07ae6b0c

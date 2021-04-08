@@ -1,13 +1,13 @@
 package support
 
-import slick.jdbc.{GetResult, SetParameter}
 import slick.jdbc.PostgresProfile.api._
-import slick.lifted.TableQuery
+import slick.jdbc.{GetResult, SetParameter}
 import utils.TokenGenerator.generateConsumerKey
 
 import java.sql.Types
 import java.util.UUID
 import scala.concurrent.Await
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
@@ -15,15 +15,21 @@ object Db extends DatabaseConnection {
 
   case class Vendor(id: String, name: String, token: String)
 
-  def cleanVendorsTable() = exec(truncateVendorsTableAction)
+  def truncate(): Int = exec(
+    for {
+      res1 <- sqlu"TRUNCATE TABLE candidates CASCADE "
+      res2 <- sqlu"TRUNCATE TABLE credentials CASCADE "
+    } yield res1 + res2
+  )
 
-  def vendorExists(vendor: String): Boolean = exec(vendorExistsAction(vendor)).isDefined
+  def consumerExists(consumer: String): Boolean = exec(consumerExistsAction(consumer)).isDefined
 
-  def vendorKey(vendor: String): Option[String] = exec(vendorKeyAction(vendor))
+  def consumerKey(candidate: String): Option[String] = exec(consumerKeyAction(candidate))
 
-  def vendorToken(vendor: String): Option[String] = exec(vendorTokenAction(vendor))
+  def consumerToken(candidate: String): Option[String] = exec(consumerTokenAction(candidate))
 
-  def saveVendor(name: String, token: String) = exec(saveVendorAction(name, token))
+  def saveConsumer(owner: String, token: String, candidates: Seq[String]): Unit =
+    exec(saveConsumerAndCandidatesAction(owner, token, candidates))
 
   def exec[T](action: DBIO[T]): T = Await.result(database.run(action), 2 seconds)
 
@@ -33,29 +39,32 @@ object Db extends DatabaseConnection {
   private implicit def slickSetParameterUUID: SetParameter[UUID] =
     SetParameter { case (v, pp) => pp.setObject(v, Types.OTHER) }
 
-  private val truncateVendorsTableAction = sqlu"TRUNCATE TABLE credentials CASCADE "
-
-  private def vendorExistsAction(name: String) =
-    sql"SELECT credential_id FROM candidates WHERE name = $name"
+  private def consumerExistsAction(owner: String) =
+    sql"SELECT id FROM credentials WHERE owner = $owner"
       .as[String]
       .headOption
 
-  private def vendorKeyAction(name: String) =
-    sql"SELECT key FROM credentials cred JOIN candidates can on cred.id = can.credential_id WHERE can.name = $name"
+  private def consumerKeyAction(owner: String) =
+    sql"SELECT key FROM credentials WHERE owner = $owner"
       .as[String]
       .headOption
 
-  private def vendorTokenAction(name: String) =
-    sql"SELECT token FROM credentials cred JOIN candidates can on cred.id = can.credential_id WHERE can.name = $name"
+  private def consumerTokenAction(owner: String) =
+    sql"SELECT token FROM credentials WHERE owner = $owner"
       .as[String]
       .headOption
 
-  private def saveVendorAction(name: String, token: String) = {
+  private def saveConsumerAndCandidatesAction(owner: String, token: String, candidates: Seq[String]) = {
     val credentialId = UUID.randomUUID()
-    val key = generateConsumerKey(name)
-    DBIO.seq(
-      sqlu"INSERT INTO credentials(id, key, token, owner) VALUES ($credentialId, $key, $token, $name)",
-      sqlu"INSERT INTO candidates(credential_id, name) VALUES ($credentialId, $name)"
-    )
+    val key          = generateConsumerKey(owner)
+
+    sqlu"INSERT INTO credentials(id, key, token, owner) VALUES ($credentialId, $key, $token, $owner)"
+      .andThen(
+        DBIO.sequence(
+          candidates.map { candidate =>
+            sqlu"INSERT INTO candidates(credential_id, name) VALUES ($credentialId, $candidate)"
+          }
+        )
+      )
   }
 }
