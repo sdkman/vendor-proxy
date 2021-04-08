@@ -14,7 +14,7 @@ import scala.concurrent.Future
 class ConsumerRepo @Inject() (val dbConfigProvider: DatabaseConfigProvider)
     extends HasDatabaseConfigProvider[JdbcProfile] {
 
-  implicit def helpersSlickGetResultUUID: GetResult[UUID] =
+  implicit def slickGetResultUUID: GetResult[UUID] =
     GetResult(r => r.nextObject.asInstanceOf[UUID])
 
   implicit def slickSetParameterUUID: SetParameter[UUID] =
