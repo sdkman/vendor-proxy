@@ -28,7 +28,7 @@ object Db extends DatabaseConnection {
 
   def consumerToken(candidate: String): Option[String] = exec(consumerTokenAction(candidate))
 
-  def saveConsumer(owner: String, token: String, candidates: Seq[String]): Unit =
+  def saveConsumer(owner: String, token: String, candidates: Seq[String] = Seq.empty): Unit =
     exec(saveConsumerAndCandidatesAction(owner, token, candidates))
 
   def exec[T](action: DBIO[T]): T = Await.result(database.run(action), 2 seconds)

@@ -40,19 +40,36 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
   }
 
   Given("""^the remote release service returns a (.*) response:$""") { (status: String, payload: String) =>
-    stubFor(post(urlEqualTo("/release"))
-      .willReturn(aResponse()
-        .withBody(payload.stripMargin)
-        .withStatus(World.statusCodes(status))
-      )
+    stubFor(
+      post(urlEqualTo("/release"))
+        .willReturn(
+          aResponse()
+            .withBody(payload.stripMargin)
+            .withStatus(World.statusCodes(status))
+        )
+    )
+  }
+
+  Then("""^the remote release service expects a Consumer header (.*)""") { header: String =>
+    verify(
+      postRequestedFor(urlEqualTo("/release"))
+        .withHeader("Consumer", equalTo(header))
+    )
+  }
+
+  Then("""^the remote release service expects an empty Consumer header""") {
+    verify(
+      postRequestedFor(urlEqualTo("/release"))
+        .withHeader("Consumer", equalTo(""))
     )
   }
 
   Then("""^the remote release service expects payload and appropriate headers:$""") { payload: String =>
-    verify(postRequestedFor(urlEqualTo("/release"))
-      .withRequestBody(equalToJson(payload.stripMargin))
-      .withHeader("Service-Token", equalTo("default_token"))
-      .withHeader("Consumer", equalTo("groovy"))
+    verify(
+      postRequestedFor(urlEqualTo("/release"))
+        .withRequestBody(equalToJson(payload.stripMargin))
+        .withHeader("Service-Token", equalTo("default_token"))
+        .withHeader("Consumer", equalTo("groovy"))
     )
   }
 
