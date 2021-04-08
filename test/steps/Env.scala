@@ -12,7 +12,7 @@ class Env extends ScalaDsl with EN {
   WireMock.configureFor(ServiceUpHost, ServiceUpPort)
 
   Before { s =>
-    Db.cleanVendorsTable()
+    Db.truncate()
     WireMock.reset()
     World.headers = mutable.Map[String, String](
       "Content-Type" -> "application/json",

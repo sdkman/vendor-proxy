@@ -86,19 +86,19 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
 
   And("""the Consumer (.*) has been persisted""") { consumer: String =>
     withClue("The consumer was not persisted") {
-      Db.vendorExists(consumer) shouldBe true
+      Db.consumerExists(consumer) shouldBe true
     }
   }
 
   And("""the persisted Consumer (.*) has consumerKey (.*)""") { (consumer: String, consumerKey: String) =>
-    Db.vendorKey(consumer) match {
+    Db.consumerKey(consumer) match {
       case Some(key) => key shouldBe consumerKey
       case None => fail("no consumer found")
     }
   }
 
   And("""the persisted Consumer (.*) has a valid sha256 representation of the consumerToken""") { consumer: String =>
-    Db.vendorToken(consumer) match {
+    Db.consumerToken(consumer) match {
       case Some(token) =>
         token should fullyMatch regex ConsumerTokenPattern
         withClue("Issued token was not equal to persisted token") {
@@ -109,8 +109,8 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
     }
   }
 
-  And("""an existing Consumer named (.*)""") { name: String =>
-    Db.saveVendor(name, TokenGenerator.generateConsumerKey(name))
+  And("""an existing Consumer owned by (.*) for candidates (.*)""") { (owner: String, candidates: String) =>
+    Db.saveConsumer(owner, TokenGenerator.generateConsumerKey(owner), candidates.split(","))
   }
 
   And("""no existing Consumer named (.*)""") { name: String =>
