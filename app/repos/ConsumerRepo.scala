@@ -34,13 +34,14 @@ class ConsumerRepo @Inject() (val dbConfigProvider: DatabaseConfigProvider)
       result2 <- sqlu"DELETE FROM credentials WHERE owner = $name"
     } yield result1 & result2).transactionally)
 
-  def findByKeyAndToken(key: String, token: String): Future[Option[String]] = db.run(
-    sql"""SELECT can.name 
+  def findByKeyAndToken(key: String, token: String): Future[Seq[String]] =
+    db.run(
+      sql"""SELECT can.name 
             FROM credentials cred JOIN candidates can ON cred.id = can.credential_id
             WHERE cred.key = $key
-            AND cred.token = $token"""
-      .as[String]
-      .headOption
-  )
+            AND cred.token = $token
+            ORDER BY can.name"""
+        .as[String]
+    )
 
 }
