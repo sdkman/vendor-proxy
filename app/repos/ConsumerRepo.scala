@@ -22,21 +22,17 @@ class ConsumerRepo @Inject() (val dbConfigProvider: DatabaseConfigProvider)
 
   def persist(c: Consumer): Future[UUID] = {
     val credentialId = UUID.randomUUID()
-    db.run(
-        for {
-          _ <- sqlu"INSERT INTO credentials(id, key, token, owner) VALUES ($credentialId, ${c.id}, ${c.token}, ${c.name})"
-          _ <- sqlu"INSERT INTO candidates(credential_id, name) VALUES ($credentialId, ${c.name})"
-        } yield ()
-      )
-      .map(_ => credentialId)
+    db.run((for {
+      _ <- sqlu"INSERT INTO credentials(id, key, token, owner) VALUES ($credentialId, ${c.id}, ${c.token}, ${c.name})"
+      _ <- sqlu"INSERT INTO candidates(credential_id, name) VALUES ($credentialId, ${c.name})"
+    } yield credentialId).transactionally)
   }
 
-  def deleteByName(name: String): Future[Int] = db.run(
-    for {
+  def deleteByName(name: String): Future[Int] =
+    db.run((for {
       result1 <- sqlu"DELETE FROM candidates WHERE name = $name"
       result2 <- sqlu"DELETE FROM credentials WHERE owner = $name"
-    } yield result1 & result2
-  )
+    } yield result1 & result2).transactionally)
 
   def findByKeyAndToken(key: String, token: String): Future[Option[String]] = db.run(
     sql"""SELECT can.name 
