@@ -28,7 +28,7 @@ class ConsumerController @Inject() (val repo: ConsumerRepo, cc: ControllerCompon
         .persist(consumer.copy(token = sha256(consumer.token)))
         .map { id =>
           logger.info(s"Successfully persisted Consumer: ${consumer.name} with id: $id")
-          Created(toJson(CreateResponse(consumer.id, consumer.token, consumer.name)))
+          Created(toJson(CreateResponse(consumer.key, consumer.token, consumer.name)))
         }
         .recover {
           case e: PSQLException =>
