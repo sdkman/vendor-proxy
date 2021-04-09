@@ -3,29 +3,22 @@ package repos
 import com.google.inject.Inject
 import domain.Consumer
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import slick.jdbc.JdbcProfile
 import slick.jdbc.PostgresProfile.api._
-import slick.jdbc.{GetResult, JdbcProfile, SetParameter}
 
-import java.sql.Types
-import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ConsumerRepo @Inject() (val dbConfigProvider: DatabaseConfigProvider)
     extends HasDatabaseConfigProvider[JdbcProfile] {
 
-  implicit def slickGetResultUUID: GetResult[UUID] =
-    GetResult(r => r.nextObject.asInstanceOf[UUID])
-
-  implicit def slickSetParameterUUID: SetParameter[UUID] =
-    SetParameter { case (v, pp) => pp.setObject(v, Types.OTHER) }
-
-  def persist(c: Consumer): Future[UUID] = {
-    val credentialId = UUID.randomUUID()
+  def persist(c: Consumer): Future[Int] = {
     db.run((for {
-      _ <- sqlu"INSERT INTO credentials(id, key, token, owner) VALUES ($credentialId, ${c.id}, ${c.token}, ${c.name})"
-      _ <- sqlu"INSERT INTO candidates(credential_id, name) VALUES ($credentialId, ${c.name})"
-    } yield credentialId).transactionally)
+      id <- sql"INSERT INTO credentials(key, token, owner) VALUES (${c.id}, ${c.token}, ${c.name}) RETURNING id"
+        .as[Int]
+        .head
+      _ <- sqlu"INSERT INTO candidates(credential_id, name) VALUES ($id, ${c.name})"
+    } yield id).transactionally)
   }
 
   def deleteByName(name: String): Future[Int] =

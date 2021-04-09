@@ -1,6 +1,6 @@
 CREATE TABLE credentials
 (
-    id    uuid primary key,
+    id    serial primary key,
     key   varchar(32),
     token varchar(64),
     owner varchar(100) UNIQUE
@@ -9,7 +9,7 @@ CREATE TABLE credentials
 
 CREATE TABLE candidates
 (
-    credential_id uuid REFERENCES credentials (id),
+    credential_id integer REFERENCES credentials (id),
     name          varchar(100),
     UNIQUE (credential_id, name)
 );
