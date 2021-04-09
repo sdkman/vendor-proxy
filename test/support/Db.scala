@@ -31,6 +31,8 @@ object Db extends DatabaseConnection {
   def saveConsumer(owner: String, token: String, candidates: Seq[String] = Seq.empty): Unit =
     exec(saveConsumerAndCandidatesAction(owner, token, candidates))
 
+  def consumerCandidates(owner: String): Seq[String] = exec(consumerCandidatesAction(owner))
+
   def exec[T](action: DBIO[T]): T = Await.result(database.run(action), 2 seconds)
 
   private implicit def helpersSlickGetResultUUID: GetResult[UUID] =
@@ -65,4 +67,10 @@ object Db extends DatabaseConnection {
       )
     } yield id).transactionally
   }
+
+  private def consumerCandidatesAction(owner: String) =
+    sql"""
+         SELECT can.name 
+         FROM credentials cred JOIN candidates can on cred.id = can.credential_id 
+         WHERE cred.owner = $owner""".as[String]
 }
