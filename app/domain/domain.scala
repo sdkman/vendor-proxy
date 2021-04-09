@@ -3,12 +3,12 @@ package domain
 import play.api.libs.json.Json
 import utils.TokenGenerator.{generateConsumerKey, generateSHAToken}
 
-case class Consumer(id: String, name: String, token: String)
+case class Consumer(key: String, name: String, token: String)
 
 object Consumers {
   implicit val consumerWrites = Json.writes[Consumer]
   implicit val consumerReads  = Json.reads[Consumer]
 
   def fromName(name: String): Consumer =
-    Consumer(id = generateConsumerKey(name), name = name, token = generateSHAToken(name))
+    Consumer(key = generateConsumerKey(name), name = name, token = generateSHAToken(name))
 }

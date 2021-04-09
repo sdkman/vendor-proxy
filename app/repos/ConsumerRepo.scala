@@ -14,7 +14,7 @@ class ConsumerRepo @Inject() (val dbConfigProvider: DatabaseConfigProvider)
 
   def persist(c: Consumer): Future[Int] = {
     db.run((for {
-      id <- sql"INSERT INTO credentials(key, token, owner) VALUES (${c.id}, ${c.token}, ${c.name}) RETURNING id"
+      id <- sql"INSERT INTO credentials(key, token, owner) VALUES (${c.key}, ${c.token}, ${c.name}) RETURNING id"
         .as[Int]
         .head
       _ <- sqlu"INSERT INTO candidates(credential_id, name) VALUES ($id, ${c.name})"
