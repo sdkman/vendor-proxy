@@ -16,7 +16,7 @@ class Env extends ScalaDsl with EN {
     WireMock.reset()
     World.headers = mutable.Map[String, String](
       "Content-Type" -> "application/json",
-      "Accept" -> "application/json"
+      "Accept"       -> "application/json"
     )
   }
 }
