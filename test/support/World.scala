@@ -25,6 +25,8 @@ object World {
 
   var issuedToken = "invalid"
 
+  var reissuedToken = "invalid"
+
   var headers: mutable.Map[String, String] = _
 
   var responseCode = 0
