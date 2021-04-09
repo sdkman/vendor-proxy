@@ -11,14 +11,15 @@ object World {
   val ServiceUpPort = 8080
 
   val statusCodes = Map(
-    "OK" -> 200,
-    "CREATED" -> 201,
-    "BAD_REQUEST" -> 400,
-    "FORBIDDEN" -> 403,
-    "NOT_FOUND" -> 404,
-    "CONFLICT" -> 409,
+    "OK"                    -> 200,
+    "CREATED"               -> 201,
+    "BAD_REQUEST"           -> 400,
+    "FORBIDDEN"             -> 403,
+    "NOT_FOUND"             -> 404,
+    "CONFLICT"              -> 409,
     "INTERNAL_SERVER_ERROR" -> 500,
-    "BAD_GATEWAY" -> 502)
+    "BAD_GATEWAY"           -> 502
+  )
 
   var adminToken: String = "invalid"
 

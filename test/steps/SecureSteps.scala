@@ -13,8 +13,9 @@ class SecureSteps extends ScalaDsl with EN with Matchers with ScalaFutures {
       Db.saveConsumer(consumer, TokenGenerator.sha256(token), candidate.split(","))
   }
 
-  Given("""^the Consumer owned by (.*) with Consumer Token (.*) for no candidates$""") { (consumer: String, token: String) =>
-    Db.saveConsumer(consumer, TokenGenerator.sha256(token))
+  Given("""^the Consumer owned by (.*) with Consumer Token (.*) for no candidates$""") {
+    (consumer: String, token: String) =>
+      Db.saveConsumer(consumer, TokenGenerator.sha256(token))
   }
 
   Given("""^the header (.*) (.*) is presented$""") { (key: String, value: String) =>

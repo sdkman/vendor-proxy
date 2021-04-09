@@ -34,20 +34,20 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
   implicit val responseReads = Json.reads[ApiResponse]
 
   Then("""^the response is:$""") { expectedJson: String =>
-    val actual = Json.parse(World.responseBody).as[ApiResponse]
+    val actual   = Json.parse(World.responseBody).as[ApiResponse]
     val expected = Json.parse(expectedJson.stripMargin).as[ApiResponse]
     actual shouldBe expected
   }
 
   And("""^the remote release service will return some (.*) response$""") { status: String =>
-        stubFor(
-          post(urlEqualTo("/release"))
-            .willReturn(
-              aResponse()
-                .withBody("""{"status": 201, "message": "blah blah"}""")
-                .withStatus(World.statusCodes(status))
-            )
+    stubFor(
+      post(urlEqualTo("/release"))
+        .willReturn(
+          aResponse()
+            .withBody("""{"status": 201, "message": "blah blah"}""")
+            .withStatus(World.statusCodes(status))
         )
+    )
   }
 
   Given("""^the remote release service will return a (.*) response:$""") { (status: String, payload: String) =>
