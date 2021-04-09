@@ -6,7 +6,7 @@
   Scenario: Client successfully Releases a new Version
     Given the header Consumer-Key 5f202e7ab75f00af194c61cc07ae6b0c is presented
     And the header Consumer-Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 is presented
-    And the remote release service returns a CREATED response:
+    And the remote release service will return a CREATED response:
     """
           |{
           |  "status": 201,
@@ -85,7 +85,7 @@
   Scenario: Client fails Release due to Conflict with existing Version
     Given the header Consumer-Key 5f202e7ab75f00af194c61cc07ae6b0c is presented
     And the header Consumer-Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 is presented
-    And the remote release service returns a CONFLICT response:
+    And the remote release service will return a CONFLICT response:
     """
           |{
           |  "status": 409,
@@ -120,7 +120,7 @@
   Scenario: Client fails Release due to remote Internal Server Error
     Given the header Consumer-Key 5f202e7ab75f00af194c61cc07ae6b0c is presented
     And the header Consumer-Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 is presented
-    And the remote release service returns a INTERNAL_SERVER_ERROR response:
+    And the remote release service will return a INTERNAL_SERVER_ERROR response:
     """
           |{
           |  "status": 500,
@@ -155,7 +155,7 @@
   Scenario: Bad Gateway because Release Access Token incorrectly configured
     Given the header Consumer-Key 5f202e7ab75f00af194c61cc07ae6b0c is presented
     And the header Consumer-Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 is presented
-    And the remote release service returns a FORBIDDEN response:
+    And the remote release service will return a FORBIDDEN response:
     """
           |{
           |  "status": 403,
@@ -196,7 +196,7 @@
   Scenario: Client successfully Releases a new Version using legacy headers
       Given the header consumer_key 5f202e7ab75f00af194c61cc07ae6b0c is presented
       And the header consumer_token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 is presented
-      And the remote release service returns a CREATED response:
+      And the remote release service will return a CREATED response:
     """
           |{
           |  "status": 201,
