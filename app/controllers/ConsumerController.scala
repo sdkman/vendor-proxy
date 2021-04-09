@@ -41,10 +41,10 @@ class ConsumerController @Inject() (val repo: ConsumerRepo, cc: ControllerCompon
     }
   }
 
-  def revoke(name: String) = AsAdministrator(parse.default, controllerComponents.actionBuilder) { req =>
-    repo.deleteByName(name).map {
+  def revoke(owner: String) = AsAdministrator(parse.default, controllerComponents.actionBuilder) { req =>
+    repo.deleteByOwner(owner).map {
       case 1 =>
-        Ok(toJson(DeleteResponse(generateConsumerKey(name), name, "consumer deleted")))
+        Ok(toJson(DeleteResponse(generateConsumerKey(owner), owner, "consumer deleted")))
       case 0 =>
         NotFound
     }

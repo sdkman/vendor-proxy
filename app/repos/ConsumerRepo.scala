@@ -28,11 +28,7 @@ class ConsumerRepo @Inject() (val dbConfigProvider: DatabaseConfigProvider)
     } yield id).transactionally)
   }
 
-  def deleteByName(name: String): Future[Int] =
-    db.run((for {
-      result1 <- sqlu"DELETE FROM candidates WHERE name = $name"
-      result2 <- sqlu"DELETE FROM credentials WHERE owner = $name"
-    } yield result1 & result2).transactionally)
+  def deleteByOwner(owner: String): Future[Int] = db.run(sqlu"DELETE FROM credentials WHERE owner = $owner")
 
   def findByKeyAndToken(key: String, token: String): Future[Seq[String]] =
     db.run(
