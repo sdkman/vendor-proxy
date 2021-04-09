@@ -122,3 +122,31 @@ Feature: Create Consumer
     Then the returned status is CREATED
     And the persisted Consumer john.doe@example.org does not have an associated candidate scala
     And the persisted Consumer john.doe@example.org does not have an associated candidate sbt
+
+  Scenario: An updated candidate results in a reissued token
+    Given the header Admin-Token default_token is presented
+    When the /consumers endpoint receives a PATCH request:
+    """
+      |{
+      |   "consumer" : "john.doe@example.org",
+      |   "candidates": [
+      |       "scala",
+      |       "sbt"
+      |   ]
+      |}
+    """
+    Then the returned status is CREATED
+    And the create response contains a valid consumerToken
+    And the persisted Consumer john.doe@example.org has a valid sha256 representation of the consumerToken
+    When the /consumers endpoint receives a PATCH request:
+    """
+      |{
+      |   "consumer" : "john.doe@example.org",
+      |   "candidates": [
+      |       "scala"
+      |   ]
+      |}
+    """
+    Then the returned status is CREATED
+    And the create response contains a reissued consumerToken
+    And the persisted Consumer john.doe@example.org has a valid sha256 representation of the consumerToken

@@ -72,6 +72,12 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
     World.issuedToken should fullyMatch regex ConsumerTokenPattern
   }
 
+  And("""^the create response contains a reissued consumerToken$""") { () =>
+    World.reissuedToken = Json.parse(responseBody).as[CreateResponse].consumerToken
+    World.issuedToken should not be World.reissuedToken
+    World.issuedToken = World.reissuedToken
+  }
+
   And("""the response contains a status of value (.*)""") { status: Int =>
     Json.parse(responseBody).validate[ErrorMessage].asOpt match {
       case Some(actual) => actual.status shouldBe status
@@ -104,6 +110,7 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
       case Some(token) =>
         token should fullyMatch regex ConsumerTokenPattern
         withClue("Issued token was not equal to persisted token") {
+          println(s"Issued token: ${World.issuedToken}")
           TokenGenerator.sha256(World.issuedToken) shouldBe token
         }
       case None =>
