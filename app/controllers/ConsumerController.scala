@@ -23,20 +23,18 @@ class ConsumerController @Inject() (val repo: ConsumerRepo, cc: ControllerCompon
 
   def create = AsAdministrator(parse.json, controllerComponents.actionBuilder) { req =>
     req.body.validate[CreateRequest].asOpt.fold(Future(BadRequest(badRequestMsg))) { consumerReq =>
-      val consumer = Consumers.fromName(consumerReq.consumer)
+      val consumer = Consumers.fromOwner(consumerReq.consumer, consumerReq.candidates)
       repo
-        .persist(consumer.copy(token = sha256(consumer.token)))
+        .createOrUpdate(consumer.copy(token = sha256(consumer.token)))
         .map { id =>
-          logger.info(s"Successfully persisted Consumer: ${consumer.name} with id: $id")
-          Created(toJson(CreateResponse(consumer.key, consumer.token, consumer.name)))
+          logger.info(
+            s"Successfully persisted owner: ${consumer.owner} for candidates: ${consumer.candidates} with id: $id"
+          )
+          Created(toJson(CreateResponse(consumer.key, consumer.token, consumer.owner)))
         }
         .recover {
-          case e: PSQLException =>
-            val message = s"Could not persist Consumer: ${e.getServerErrorMessage}"
-            logger.warn(message)
-            Conflict(conflictMsg(message))
           case e: Throwable =>
-            val message = s"Error on persisting Consumer: ${consumer.name} - err:${e.getMessage}"
+            val message = s"Error on persisting Consumer: ${consumer.owner} - err:${e.getMessage}"
             logger.error(message)
             InternalServerError(internalServerErrorMsg(e))
         }

@@ -12,12 +12,19 @@ import scala.concurrent.Future
 class ConsumerRepo @Inject() (val dbConfigProvider: DatabaseConfigProvider)
     extends HasDatabaseConfigProvider[JdbcProfile] {
 
-  def persist(c: Consumer): Future[Int] = {
+  def createOrUpdate(c: Consumer): Future[Int] = {
     db.run((for {
-      id <- sql"INSERT INTO credentials(key, token, owner) VALUES (${c.key}, ${c.token}, ${c.name}) RETURNING id"
+      id <- sql"""
+             INSERT INTO credentials(key, token, owner) 
+             VALUES (${c.key}, ${c.token}, ${c.owner}) 
+             ON CONFLICT(owner) DO UPDATE SET key = ${c.key}, token = ${c.token}
+             RETURNING id"""
         .as[Int]
         .head
-      _ <- sqlu"INSERT INTO candidates(credential_id, name) VALUES ($id, ${c.name})"
+      _ <- sqlu"DELETE FROM candidates WHERE credential_id = $id"
+      _ <- DBIO.sequence(
+        c.candidates.map(name => sqlu"INSERT INTO candidates(credential_id, name) VALUES ($id, $name)")
+      )
     } yield id).transactionally)
   }
 

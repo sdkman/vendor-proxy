@@ -4,7 +4,7 @@
 
 GET         /alive            controllers.HealthController.alive
 GET         /info             controllers.HealthController.info
-POST        /consumers        controllers.ConsumerController.create
+PATCH       /consumers        controllers.ConsumerController.create
 DELETE      /consumers/:name  controllers.ConsumerController.revoke(name: String)
 POST        /*service         controllers.ProxyController.execute(service: String)
 PUT         /*service         controllers.ProxyController.execute(service: String)

@@ -4,7 +4,7 @@ import play.api.libs.json.Json
 
 trait ConsumerMarshalling {
 
-  case class CreateRequest(consumer: String)
+  case class CreateRequest(consumer: String, candidates: Seq[String])
 
   case class CreateResponse(consumerKey: String, consumerToken: String, name: String)
 

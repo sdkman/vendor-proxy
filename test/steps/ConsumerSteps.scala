@@ -12,9 +12,10 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
 
   private val ConsumerTokenPattern = """^[a-f0-9]{64}$""".r
 
-  And("""^the (.*) endpoint receives a POST request:$""") { (endpoint: String, json: String) =>
+  And("""^the (.*) endpoint receives a PATCH request:$""") { (endpoint: String, json: String) =>
     val response = Http(AppHost + endpoint)
       .postData(json.stripMargin)
+      .method("PATCH")
       .headers(World.headers.toMap)
       .option(HttpOptions.connTimeout(10000))
       .option(HttpOptions.readTimeout(10000))
@@ -108,6 +109,15 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
       case None =>
         fail("no consumer found")
     }
+  }
+
+  And("""the persisted Consumer (.*) has an associated candidate (.*)""") { (consumer: String, candidate: String) =>
+    Db.consumerCandidates(consumer) should contain(candidate)
+  }
+
+  And("""the persisted Consumer (.*) does not have an associated candidate (.*)""") {
+    (consumer: String, candidate: String) =>
+      Db.consumerCandidates(consumer) should not contain (candidate)
   }
 
   And("""an existing Consumer owned by (.*) for candidates (.*)""") { (owner: String, candidates: String) =>
