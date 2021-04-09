@@ -39,7 +39,18 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
     actual shouldBe expected
   }
 
-  Given("""^the remote release service returns a (.*) response:$""") { (status: String, payload: String) =>
+  And("""^the remote release service will return some (.*) response$""") { status: String =>
+        stubFor(
+          post(urlEqualTo("/release"))
+            .willReturn(
+              aResponse()
+                .withBody("""{"status": 201, "message": "blah blah"}""")
+                .withStatus(World.statusCodes(status))
+            )
+        )
+  }
+
+  Given("""^the remote release service will return a (.*) response:$""") { (status: String, payload: String) =>
     stubFor(
       post(urlEqualTo("/release"))
         .willReturn(

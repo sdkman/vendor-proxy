@@ -4,14 +4,7 @@ Feature: Support multi-candidate consumer
     Given the Consumer owned by groovy with Consumer Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 for candidate groovy
     And the header Consumer-Key 5f202e7ab75f00af194c61cc07ae6b0c is presented
     And the header Consumer-Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 is presented
-    And the remote release service returns a CREATED response:
-    """
-          |{
-          |  "status": 201,
-          |  "id": "5426b98dba78e60054fe482f",
-          |  "message": "released groovy version: 2.3.6"
-          |}
-    """
+    And the remote release service will return some CREATED response
     When posting JSON on the /release endpoint:
     """
           |{
@@ -27,14 +20,7 @@ Feature: Support multi-candidate consumer
     Given the Consumer owned by groovy with Consumer Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 for candidate groovy,grails
     And the header Consumer-Key 5f202e7ab75f00af194c61cc07ae6b0c is presented
     And the header Consumer-Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 is presented
-    And the remote release service returns a CREATED response:
-    """
-          |{
-          |  "status": 201,
-          |  "id": "5426b98dba78e60054fe482f",
-          |  "message": "released groovy version: 2.3.6"
-          |}
-    """
+    And the remote release service will return some CREATED response
     When posting JSON on the /release endpoint:
     """
           |{
