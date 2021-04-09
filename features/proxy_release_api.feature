@@ -1,10 +1,10 @@
   Feature: Proxy the Release API
 
   Background:
-    Given the Consumer owned by groovy with Consumer Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 for candidate groovy
+    Given the Consumer owned by john.doe@example.org with Consumer Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 for candidate groovy
 
   Scenario: Client successfully Releases a new Version
-    Given the header Consumer-Key 5f202e7ab75f00af194c61cc07ae6b0c is presented
+    Given the header Consumer-Key a4bf5bbb9feaa2713d99a3b52ab80024 is presented
     And the header Consumer-Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 is presented
     And the remote release service will return a CREATED response:
     """
@@ -62,7 +62,7 @@
     And the remote release service expects NO posts
 
   Scenario: Client is denied access to Release due to invalid Consumer Token
-    Given the header Consumer-Key 5f202e7ab75f00af194c61cc07ae6b0c is presented
+    Given the header Consumer-Key a4bf5bbb9feaa2713d99a3b52ab80024 is presented
     And the header Consumer-Token invalid_token is presented
     When posting JSON on the /release endpoint:
     """
@@ -83,7 +83,7 @@
     And the remote release service expects NO posts
 
   Scenario: Client fails Release due to Conflict with existing Version
-    Given the header Consumer-Key 5f202e7ab75f00af194c61cc07ae6b0c is presented
+    Given the header Consumer-Key a4bf5bbb9feaa2713d99a3b52ab80024 is presented
     And the header Consumer-Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 is presented
     And the remote release service will return a CONFLICT response:
     """
@@ -118,7 +118,7 @@
     """
 
   Scenario: Client fails Release due to remote Internal Server Error
-    Given the header Consumer-Key 5f202e7ab75f00af194c61cc07ae6b0c is presented
+    Given the header Consumer-Key a4bf5bbb9feaa2713d99a3b52ab80024 is presented
     And the header Consumer-Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 is presented
     And the remote release service will return a INTERNAL_SERVER_ERROR response:
     """
@@ -153,7 +153,7 @@
     """
 
   Scenario: Bad Gateway because Release Access Token incorrectly configured
-    Given the header Consumer-Key 5f202e7ab75f00af194c61cc07ae6b0c is presented
+    Given the header Consumer-Key a4bf5bbb9feaa2713d99a3b52ab80024 is presented
     And the header Consumer-Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 is presented
     And the remote release service will return a FORBIDDEN response:
     """
@@ -180,7 +180,7 @@
     """
 
   Scenario: Bad Gateway when Release API URL incorrectly configured
-    Given the header Consumer-Key 5f202e7ab75f00af194c61cc07ae6b0c is presented
+    Given the header Consumer-Key a4bf5bbb9feaa2713d99a3b52ab80024 is presented
     And the header Consumer-Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 is presented
     And the remote release service is unavailable
     When posting JSON on the /release endpoint:
@@ -194,7 +194,7 @@
     Then the status received is NOT_FOUND
 
   Scenario: Client successfully Releases a new Version using legacy headers
-      Given the header consumer_key 5f202e7ab75f00af194c61cc07ae6b0c is presented
+      Given the header consumer_key a4bf5bbb9feaa2713d99a3b52ab80024 is presented
       And the header consumer_token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 is presented
       And the remote release service will return a CREATED response:
     """
