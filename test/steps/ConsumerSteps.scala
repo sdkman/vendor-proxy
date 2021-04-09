@@ -42,10 +42,10 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
     }
   }
 
-  And("""^the delete response contains a name of value (.*)$""") { name: String =>
+  And("""^the delete response contains an owner of value (.*)$""") { owner: String =>
     Json.parse(responseBody).validate[DeleteResponse].asOpt match {
-      case Some(actual) => actual.name shouldBe name
-      case None         => fail("no name found")
+      case Some(actual) => actual.owner shouldBe owner
+      case None         => fail("owner not found")
     }
   }
 

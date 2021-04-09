@@ -8,7 +8,7 @@ trait ConsumerMarshalling {
 
   case class CreateResponse(consumerKey: String, consumerToken: String, name: String)
 
-  case class DeleteResponse(consumerKey: String, name: String, message: String)
+  case class DeleteResponse(consumerKey: String, owner: String, message: String)
 
   implicit val createRequestReads = Json.reads[CreateRequest]
 
