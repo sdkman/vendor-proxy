@@ -55,16 +55,14 @@ object Db extends DatabaseConnection {
       .headOption
 
   private def saveConsumerAndCandidatesAction(owner: String, token: String, candidates: Seq[String]) = {
-    val credentialId = UUID.randomUUID()
-    val key          = generateConsumerKey(owner)
-
-    sqlu"INSERT INTO credentials(id, key, token, owner) VALUES ($credentialId, $key, $token, $owner)"
-      .andThen(
-        DBIO.sequence(
-          candidates.map { candidate =>
-            sqlu"INSERT INTO candidates(credential_id, name) VALUES ($credentialId, $candidate)"
-          }
-        )
+    val key = generateConsumerKey(owner)
+    (for {
+      id <- sql"""INSERT INTO credentials(key, token, owner) VALUES ($key, $token, $owner) RETURNING id""".as[Int].head
+      _ <- DBIO.sequence(
+        candidates.map { name =>
+          sqlu"INSERT INTO candidates(credential_id, name) VALUES ($id, $name)"
+        }
       )
+    } yield id).transactionally
   }
 }
