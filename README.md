@@ -40,21 +40,27 @@ In these configuration blocks per service, we have opted for using environment v
 
 ### Creating new Consumers
 
-An endpoint has also been provided for creating new consumers. This endpoint simply takes a JSON `POST` on `/consumer` of:
+An endpoint has also been provided for creating new consumers. This endpoint simply takes a JSON `PATCH` on `/consumer` of:
 
-    {"consumer": "groovy"}
+    {
+      "consumer": "person@example.org",
+      "candidates": [
+        "candidate1",
+        "candidate2"
+      ]
+    }
 
 and returns a JSON response:
 
     {
       "consumerKey": "5f202e7ab75f00af194c61cc07ae6b0c",
       "consumerToken": "9d3d95435ace2906e3ba80c3dfcaf0ededb9084aabc205f6d1232121996185c2",
-      "name": "groovy"
+      "name": "person@example.org"
     }
 
 ### Revoke existing Consumer
 
-To revoke a consumer, a `DELETE` request can be made on the `/consumer/{name}` endpoint. This returns a JSON response:
+To revoke a consumer, a `DELETE` request can be made on the `/consumer/{consumer}` endpoint. This returns a JSON response:
 
     {
       "consumerKey": "5f202e7ab75f00af194c61cc07ae6b0c",
