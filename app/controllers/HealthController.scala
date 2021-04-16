@@ -10,7 +10,6 @@ import utils.{ErrorMarshalling, VendorProxyConfig}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class HealthController @Inject() (
-    val config: VendorProxyConfig,
     val dbConfigProvider: DatabaseConfigProvider,
     val cc: ControllerComponents
 ) extends AbstractController(cc)
@@ -28,9 +27,5 @@ class HealthController @Inject() (
       .recover {
         case e: Throwable => ServiceUnavailable(serviceUnavailableMsg(e))
       }
-  }
-
-  val info = Action { request =>
-    Ok(obj("version" -> config.version))
   }
 }

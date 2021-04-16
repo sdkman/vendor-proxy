@@ -11,6 +11,4 @@ class VendorProxyConfig @Inject() (val configuration: Configuration) {
   def serviceToken(service: String) = configuration.get[String](s"services.$service.serviceToken")
 
   def secret = configuration.get[String]("admin.token")
-
-  def version = configuration.get[String]("application.version")
 }

@@ -3,7 +3,6 @@
 # ~~~~
 
 GET         /alive            controllers.HealthController.alive
-GET         /info             controllers.HealthController.info
 PATCH       /consumers        controllers.ConsumerController.create
 DELETE      /consumers/:name  controllers.ConsumerController.revoke(name: String)
 DELETE      /*service         controllers.ProxyController.execute(service: String)
