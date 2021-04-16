@@ -47,7 +47,8 @@ An endpoint has also been provided for creating new consumers. This endpoint sim
       "candidates": [
         "candidate1",
         "candidate2"
-      ]
+      ],
+      "vendor": "vendor"
     }
 
 and returns a JSON response:

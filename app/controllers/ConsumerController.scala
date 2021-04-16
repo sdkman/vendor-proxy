@@ -22,8 +22,8 @@ class ConsumerController @Inject() (val repo: ConsumerRepo, cc: ControllerCompon
     with Logging {
 
   def create = AsAdministrator(parse.json, controllerComponents.actionBuilder) { req =>
-    req.body.validate[CreateRequest].asOpt.fold(Future(BadRequest(badRequestMsg))) { consumerReq =>
-      val consumer = Consumers.fromOwner(consumerReq.consumer, consumerReq.candidates)
+    req.body.validate[CreateRequest].asOpt.fold(Future.successful(BadRequest(badRequestMsg))) { consumerReq =>
+      val consumer = Consumers.fromOwner(consumerReq.consumer, consumerReq.candidates, consumerReq.vendor)
       repo
         .createOrUpdate(consumer.copy(token = sha256(consumer.token)))
         .map { id =>

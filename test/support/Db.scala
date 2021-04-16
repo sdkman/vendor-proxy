@@ -33,6 +33,8 @@ object Db extends DatabaseConnection {
 
   def consumerCandidates(owner: String): Seq[String] = exec(consumerCandidatesAction(owner))
 
+  def consumerVendor(owner: String): Option[String] = exec(consumerVendorAction(owner).headOption)
+
   def exec[T](action: DBIO[T]): T = Await.result(database.run(action), 2 seconds)
 
   private implicit def helpersSlickGetResultUUID: GetResult[UUID] =
@@ -73,4 +75,7 @@ object Db extends DatabaseConnection {
          SELECT can.name 
          FROM credentials cred JOIN candidates can on cred.id = can.credential_id 
          WHERE cred.owner = $owner""".as[String]
+
+  private def consumerVendorAction(owner: String) =
+    sql"""SELECT cred.vendor FROM credentials cred WHERE cred.owner = $owner""".as[String]
 }

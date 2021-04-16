@@ -15,8 +15,8 @@ class ConsumerRepo @Inject() (val dbConfigProvider: DatabaseConfigProvider)
   def createOrUpdate(c: Consumer): Future[Int] = {
     db.run((for {
       id <- sql"""
-             INSERT INTO credentials(key, token, owner) 
-             VALUES (${c.key}, ${c.token}, ${c.owner}) 
+             INSERT INTO credentials(key, token, owner, vendor)
+             VALUES (${c.key}, ${c.token}, ${c.owner}, ${c.vendor})
              ON CONFLICT(owner) DO UPDATE SET key = ${c.key}, token = ${c.token}
              RETURNING id"""
         .as[Int]

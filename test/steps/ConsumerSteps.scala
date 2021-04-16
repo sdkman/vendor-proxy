@@ -1,6 +1,7 @@
 package steps
 
 import cucumber.api.scala.{EN, ScalaDsl}
+import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.Json
 import scalaj.http.{Http, HttpOptions}
@@ -8,7 +9,13 @@ import support.World._
 import support.{Db, World}
 import utils.{ConsumerMarshalling, ErrorMarshalling, TokenGenerator}
 
-class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshalling with ErrorMarshalling {
+class ConsumerSteps
+    extends ScalaDsl
+    with EN
+    with Matchers
+    with OptionValues
+    with ConsumerMarshalling
+    with ErrorMarshalling {
 
   private val ConsumerTokenPattern = """^[a-f0-9]{64}$""".r
 
@@ -57,6 +64,7 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
   }
 
   And("""^the returned status is (.*)$""") { status: String =>
+    println(responseBody)
     responseCode shouldBe statusCodes(status)
   }
 
@@ -120,6 +128,10 @@ class ConsumerSteps extends ScalaDsl with EN with Matchers with ConsumerMarshall
 
   And("""the persisted Consumer (.*) has an associated candidate (.*)""") { (consumer: String, candidate: String) =>
     Db.consumerCandidates(consumer) should contain(candidate)
+  }
+
+  And("""the persisted Consumer (.*) has an associated vendor (.*)""") { (consumer: String, vendor: String) =>
+    Db.consumerVendor(consumer).value shouldBe vendor
   }
 
   And("""the persisted Consumer (.*) does not have an associated candidate (.*)""") {

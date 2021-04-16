@@ -52,6 +52,20 @@ Feature: Create Consumer
     And the persisted Consumer john.doe@example.org has consumerKey a4bf5bbb9feaa2713d99a3b52ab80024
     And the persisted Consumer john.doe@example.org has a valid sha256 representation of the consumerToken
 
+  Scenario: A vendor is assigned to a Consumer
+    Given the header Admin-Token default_token is presented
+    When the /consumers endpoint receives a PATCH request:
+    """
+      |{
+      |   "consumer" : "john.doe@example.org",
+      |   "candidates" : [],
+      |   "vendor" : "scala"
+      |}
+    """
+    Then the returned status is CREATED
+    And the Consumer john.doe@example.org has been persisted
+    And the persisted Consumer john.doe@example.org has an associated vendor scala
+
   Scenario: A single candidate is assigned to a Consumer
     Given the header Admin-Token default_token is presented
     When the /consumers endpoint receives a PATCH request:
