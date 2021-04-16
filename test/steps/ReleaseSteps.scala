@@ -26,6 +26,7 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
   }
 
   Then("""^the status received is (.*)$""") { status: String =>
+    println(World.responseBody)
     World.responseCode shouldBe World.statusCodes(status)
   }
 
@@ -68,10 +69,24 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
     )
   }
 
+  Then("""^the remote release service expects a Vendor header (.*)""") { header: String =>
+    verify(
+      postRequestedFor(urlEqualTo("/release"))
+        .withHeader("Vendor", equalTo(header))
+    )
+  }
+
   Then("""^the remote release service expects an empty Candidates header""") {
     verify(
       postRequestedFor(urlEqualTo("/release"))
         .withHeader("Candidates", equalTo(""))
+    )
+  }
+
+  Then("""^the remote release service expects no Vendor header""") {
+    verify(
+      postRequestedFor(urlEqualTo("/release"))
+        .withoutHeader("Vendor")
     )
   }
 

@@ -22,14 +22,16 @@ class ProxyController @Inject() (
     with Logging {
 
   def execute(service: String) =
-    AsConsumer(parse.json, controllerComponents.actionBuilder) { (request, candidates) =>
-      logger.info(s"Proxy $service for $candidates")
-      wSClient
-        .url(config.apiUrl(service))
-        .withHttpHeaders(tokenHeader(service), candidatesHeader(candidates))
-        .withMethod(request.method)
-        .withBody(request.body)
-        .execute()
-        .map(response => Status(response.status)(response.body))
+    AsConsumer(parse.json, controllerComponents.actionBuilder) {
+      (request, candidates: String, vendor: Option[String]) =>
+        logger.info(s"Proxy request for: $service with candidates: $candidates and vendor: $vendor")
+        val headers = Seq(tokenHeader(service), candidatesHeader(candidates)) ++ vendor.map(vendorHeader)
+        wSClient
+          .url(config.apiUrl(service))
+          .withHttpHeaders(headers: _*)
+          .withMethod(request.method)
+          .withBody(request.body)
+          .execute()
+          .map(response => Status(response.status)(response.body))
     }
 }

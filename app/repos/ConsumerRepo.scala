@@ -3,11 +3,13 @@ package repos
 import com.google.inject.Inject
 import domain.Consumer
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import slick.jdbc.JdbcProfile
+import slick.jdbc.{GetResult, JdbcProfile}
 import slick.jdbc.PostgresProfile.api._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
+case class ConsumerFields(candidate: String, vendor: Option[String])
 
 class ConsumerRepo @Inject() (val dbConfigProvider: DatabaseConfigProvider)
     extends HasDatabaseConfigProvider[JdbcProfile] {
@@ -30,14 +32,16 @@ class ConsumerRepo @Inject() (val dbConfigProvider: DatabaseConfigProvider)
 
   def deleteByOwner(owner: String): Future[Int] = db.run(sqlu"DELETE FROM credentials WHERE owner = $owner")
 
-  def findByKeyAndToken(key: String, token: String): Future[Seq[String]] =
+  implicit val getConsumerFieldsResult: GetResult[ConsumerFields] = GetResult(r => ConsumerFields(r.<<, r.<<))
+
+  def findConsumerFieldsByKeyAndToken(key: String, token: String): Future[Seq[ConsumerFields]] =
     db.run(
-      sql"""SELECT can.name 
+      sql"""SELECT can.name, cred.vendor
             FROM credentials cred JOIN candidates can ON cred.id = can.credential_id
             WHERE cred.key = $key
             AND cred.token = $token
             ORDER BY can.name"""
-        .as[String]
+        .as[ConsumerFields]
     )
 
 }

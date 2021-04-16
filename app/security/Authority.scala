@@ -1,7 +1,7 @@
 package security
 
 import play.api.mvc._
-import repos.ConsumerRepo
+import repos.{ConsumerFields, ConsumerRepo}
 import utils.TokenGenerator.sha256
 import utils.{ErrorMarshalling, VendorProxyConfig}
 
@@ -33,19 +33,21 @@ object AsConsumer extends ErrorMarshalling {
   val consumerTokenHeaderNames = Seq("consumer_token", "Consumer-Token")
 
   def apply[T](parser: BodyParser[T], actionBuilder: ActionBuilder[Request, AnyContent])(
-      f: (Request[T], String) => Future[Result]
+      f: (Request[T], String, Option[String]) => Future[Result]
   )(implicit cr: ConsumerRepo): Action[T] =
     actionBuilder.async(parser)(secured(f))
 
   def secured[T](
-      fun: (Request[T], String) => Future[Result]
+      fun: (Request[T], String, Option[String]) => Future[Result]
   )(implicit cr: ConsumerRepo): Request[T] => Future[Result] = { req: Request[T] =>
     consumerKeyHeaderNames.flatMap(req.headers.get).headOption.fold(forbiddenF) { key =>
       consumerTokenHeaderNames.flatMap(req.headers.get).headOption.fold(forbiddenF) { token =>
-        cr.findByKeyAndToken(key, sha256(token)).flatMap { candidates: Seq[String] =>
-          if (candidates.nonEmpty)
-            fun(req, candidates.mkString("|"))
-          else forbiddenF
+        cr.findConsumerFieldsByKeyAndToken(key, sha256(token)).flatMap { fields: Seq[ConsumerFields]  =>
+          if (fields.nonEmpty) {
+            val candidates = fields.map(_.candidate).mkString("|")
+            val vendor = fields.flatMap(_.vendor).headOption
+            fun(req, candidates, vendor)
+          } else forbiddenF
         }
       }
     }
