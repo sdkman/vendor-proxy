@@ -14,7 +14,7 @@ Feature: Support multi-candidate consumer
           |}
     """
     Then the status received is CREATED
-    And the remote release service expects a Consumer header groovy
+    And the remote release service expects a Candidates header groovy
 
   Scenario: A consumer can publish to multiple candidates
     Given the Consumer owned by john.doe@example.org with Consumer Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 for candidate groovy,grails
@@ -30,7 +30,7 @@ Feature: Support multi-candidate consumer
           |}
     """
     Then the status received is CREATED
-    And the remote release service expects a Consumer header grails|groovy
+    And the remote release service expects a Candidates header grails|groovy
 
   Scenario: A consumer can be orphaned from candidates
     Given the Consumer owned by john.doe@example.org with Consumer Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 for no candidates

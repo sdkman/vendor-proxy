@@ -135,8 +135,7 @@ class ConsumerSteps
   }
 
   And("""the persisted Consumer (.*) does not have an associated candidate (.*)""") {
-    (consumer: String, candidate: String) =>
-      Db.consumerCandidates(consumer) should not contain (candidate)
+    (consumer: String, candidate: String) => Db.consumerCandidates(consumer) should not contain (candidate)
   }
 
   And("""an existing Consumer owned by (.*) for candidates (.*)""") { (owner: String, candidates: String) =>

@@ -42,9 +42,9 @@ object AsConsumer extends ErrorMarshalling {
   )(implicit cr: ConsumerRepo): Request[T] => Future[Result] = { req: Request[T] =>
     consumerKeyHeaderNames.flatMap(req.headers.get).headOption.fold(forbiddenF) { key =>
       consumerTokenHeaderNames.flatMap(req.headers.get).headOption.fold(forbiddenF) { token =>
-        cr.findByKeyAndToken(key, sha256(token)).flatMap { consumerNames: Seq[String] =>
-          if (consumerNames.nonEmpty)
-            fun(req, consumerNames.mkString("|"))
+        cr.findByKeyAndToken(key, sha256(token)).flatMap { candidates: Seq[String] =>
+          if (candidates.nonEmpty)
+            fun(req, candidates.mkString("|"))
           else forbiddenF
         }
       }

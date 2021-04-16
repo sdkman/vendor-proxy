@@ -28,8 +28,13 @@ object Db extends DatabaseConnection {
 
   def consumerToken(candidate: String): Option[String] = exec(consumerTokenAction(candidate))
 
-  def saveConsumer(owner: String, token: String, candidates: Seq[String] = Seq.empty): Unit =
-    exec(saveConsumerAndCandidatesAction(owner, token, candidates))
+  def saveConsumer(
+      owner: String,
+      token: String,
+      candidates: Seq[String] = Seq.empty,
+      vendor: Option[String] = None
+  ): Unit =
+    exec(saveConsumerAndCandidatesAction(owner, token, candidates, vendor))
 
   def consumerCandidates(owner: String): Seq[String] = exec(consumerCandidatesAction(owner))
 
@@ -58,14 +63,19 @@ object Db extends DatabaseConnection {
       .as[String]
       .headOption
 
-  private def saveConsumerAndCandidatesAction(owner: String, token: String, candidates: Seq[String]) = {
+  private def saveConsumerAndCandidatesAction(
+      owner: String,
+      token: String,
+      candidates: Seq[String],
+      vendor: Option[String]
+  ) = {
     val key = generateConsumerKey(owner)
     (for {
-      id <- sql"""INSERT INTO credentials(key, token, owner) VALUES ($key, $token, $owner) RETURNING id""".as[Int].head
+      id <- sql"""INSERT INTO credentials(key, token, owner, vendor) VALUES ($key, $token, $owner, $vendor) RETURNING id"""
+        .as[Int]
+        .head
       _ <- DBIO.sequence(
-        candidates.map { name =>
-          sqlu"INSERT INTO candidates(credential_id, name) VALUES ($id, $name)"
-        }
+        candidates.map { name => sqlu"INSERT INTO candidates(credential_id, name) VALUES ($id, $name)" }
       )
     } yield id).transactionally
   }

@@ -3,7 +3,7 @@ package steps
 import com.github.tomakehurst.wiremock.client.WireMock._
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.matchers.should.Matchers
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, Reads}
 import scalaj.http.{Http, HttpOptions}
 import support.World
 import support.World.AppHost
@@ -31,7 +31,7 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
 
   sealed case class ApiResponse(status: Int, id: Option[String], message: String)
 
-  implicit val responseReads = Json.reads[ApiResponse]
+  implicit val responseReads: Reads[ApiResponse] = Json.reads[ApiResponse]
 
   Then("""^the response is:$""") { expectedJson: String =>
     val actual   = Json.parse(World.responseBody).as[ApiResponse]
@@ -61,17 +61,17 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
     )
   }
 
-  Then("""^the remote release service expects a Consumer header (.*)""") { header: String =>
+  Then("""^the remote release service expects a Candidates header (.*)""") { header: String =>
     verify(
       postRequestedFor(urlEqualTo("/release"))
-        .withHeader("Consumer", equalTo(header))
+        .withHeader("Candidates", equalTo(header))
     )
   }
 
-  Then("""^the remote release service expects an empty Consumer header""") {
+  Then("""^the remote release service expects an empty Candidates header""") {
     verify(
       postRequestedFor(urlEqualTo("/release"))
-        .withHeader("Consumer", equalTo(""))
+        .withHeader("Candidates", equalTo(""))
     )
   }
 
@@ -80,7 +80,7 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
       postRequestedFor(urlEqualTo("/release"))
         .withRequestBody(equalToJson(payload.stripMargin))
         .withHeader("Service-Token", equalTo("default_token"))
-        .withHeader("Consumer", equalTo("groovy"))
+        .withHeader("Candidates", equalTo("groovy"))
     )
   }
 
