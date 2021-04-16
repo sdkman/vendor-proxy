@@ -19,9 +19,6 @@ script:
 after_script:
   - ./compose down
 
-after_success:
-  - sbt docker:publish
-
 cache:
   directories:
   - "$HOME/.ivy2"
