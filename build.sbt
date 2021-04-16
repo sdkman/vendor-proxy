@@ -6,8 +6,6 @@ enablePlugins(DockerPlugin)
 
 val conf = ConfigFactory.parseFile(new File("conf/application.conf")).resolve()
 
-version := conf.getString("application.version")
-
 name := """vendor-proxy"""
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
