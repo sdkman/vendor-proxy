@@ -2,31 +2,12 @@ version: '2'
 
 services:
 
-  vendor-proxy:
-    container_name: vendor-proxy
-    image: sdkman/vendor-proxy:1.0.0-SNAPSHOT
-    mem_limit: 256m
-    ports:
-      - "9000:9000"
-    depends_on:
-      - postgres-init
-      - wiremock
-
   wiremock:
     container_name: wiremock
     image: rodolpheche/wiremock:latest
     ports:
       - "8080:8080"
       - "8081:8081"
-
-  postgres-init:
-    container_name: postgres_init
-    image: postgres:9.5.2
-    depends_on:
-      - postgres
-    volumes:
-      - $PWD/wait-for-it.sh:/wait-for-it.sh
-    command: bash -c "/wait-for-it.sh -h postgres -p 5432 -t 30 -- psql -h postgres -p 5432 -U vendors --list"
 
   postgres:
     container_name: postgres
