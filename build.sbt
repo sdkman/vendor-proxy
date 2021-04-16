@@ -31,13 +31,11 @@ libraryDependencies ++= Seq(
 
 unmanagedResourceDirectories in Test += baseDirectory.value / "features"
 
-lazy val dockerSettings = Seq(
-  dockerBaseImage := "adoptopenjdk/openjdk11:jdk-11.0.10_9-debian-slim",
-  maintainer in Docker := "Marco Vermeulen <marco@sdkman.io>",
-  dockerUpdateLatest := true,
-  packageName := "sdkman/vendor-proxy",
-  dockerExposedPorts ++= Seq(9000)
-)
+dockerBaseImage := "adoptopenjdk/openjdk11:jdk-11.0.10_9-debian-slim"
+maintainer in Docker := "Marco Vermeulen <marco@sdkman.io>"
+dockerUpdateLatest := true
+packageName := "sdkman/vendor-proxy"
+dockerExposedPorts ++= Seq(9000)
 
 javaOptions in Universal ++= Seq(
   "-J-Xms128m -J-Xmx224m -Dpidfile.path=/dev/null"
