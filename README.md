@@ -72,4 +72,24 @@ The endpoints themselves are secured, and looks for the presence of an `Admin-To
 
 Once the Consumer Key and Token have been obtained, they can be used to make subsequent calls to proxied endpoints. All these calls will _require `Consumer-Key` and `Consumer-Token` headers to be set respectively for each call_.
 
-Give it a spin and feel free to raise issues and pull requests!
+
+### Release
+
+Start up supporting services:
+
+```
+$ ./compose up
+```
+
+Run up the service:
+
+```
+$ sbt run
+$ http :9000/alive
+```
+
+Perform the release:
+
+```
+$ sbt release
+```
