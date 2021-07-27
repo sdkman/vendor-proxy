@@ -2,16 +2,6 @@ version: '2'
 
 services:
 
-  vendor-proxy:
-    container_name: vendor-proxy
-    image: sdkman/vendor-proxy:latest
-    mem_limit: 256m
-    ports:
-      - "9000:9000"
-    depends_on:
-      - postgres
-      - wiremock
-
   wiremock:
     container_name: wiremock
     image: rodolpheche/wiremock:latest
