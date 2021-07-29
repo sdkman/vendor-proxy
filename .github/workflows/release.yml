@@ -1,0 +1,36 @@
+name: Release
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: "Stable Release"
+    runs-on: ubuntu-latest
+    environment: production
+    services:
+      postgres:
+        image: postgres:9.5
+        env:
+          POSTGRES_USER: "vendors"
+          POSTGRES_PASSWORD: "vendors"
+          POSTGRES_DB: "vendors"
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Log in to Docker Hub
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+    - uses: oleksiyrudenko/gha-git-credentials@v2.1
+      with:
+        token: '${{ secrets.GITHUB_TOKEN }}'
+    - name: Release
+      run: ./sbt "release with-defaults"

@@ -1,10 +1,6 @@
-import com.typesafe.config._
-
 enablePlugins(JavaServerAppPackaging)
 
 enablePlugins(DockerPlugin)
-
-val conf = ConfigFactory.parseFile(new File("conf/application.conf")).resolve()
 
 name := """vendor-proxy"""
 
