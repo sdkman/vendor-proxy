@@ -6,8 +6,6 @@ object World {
 
   val AppHost = "http://localhost:9000"
 
-  val ServiceUpHost = "localhost"
-
   val ServiceUpPort = 8080
 
   val statusCodes = Map(

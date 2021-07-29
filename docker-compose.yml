@@ -1,14 +1,6 @@
 version: '2'
 
 services:
-
-  wiremock:
-    container_name: wiremock
-    image: rodolpheche/wiremock:latest
-    ports:
-      - "8080:8080"
-      - "8081:8081"
-
   postgres:
     container_name: postgres
     image: postgres:9.5.2

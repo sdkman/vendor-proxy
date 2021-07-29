@@ -26,7 +26,7 @@ libraryDependencies ++= Seq(
   "io.cucumber" % "cucumber-junit" % "4.7.1" % Test,
   "info.cukes" % "gherkin" % "2.7.3" % Test,
   "org.scalaj" %% "scalaj-http" % "2.4.0" % Test,
-  "com.github.tomakehurst" % "wiremock" % "2.2.2" % Test
+  "com.github.tomakehurst" % "wiremock-jre8-standalone" % "2.29.1" % Test
 )
 
 unmanagedResourceDirectories in Test += baseDirectory.value / "features"
