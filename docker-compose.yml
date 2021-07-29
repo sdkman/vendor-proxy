@@ -8,5 +8,6 @@ services:
      - "5432:5432"
     environment:
       POSTGRES_USER: "vendors"
+      POSTGRES_PASSWORD: "vendors"
       POSTGRES_DB: "vendors"
 

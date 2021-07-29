@@ -14,6 +14,7 @@ jobs:
         image: postgres:9.5
         env:
           POSTGRES_USER: "vendors"
+          POSTGRES_PASSWORD: "vendors"
           POSTGRES_DB: "vendors"
         options: >-
           --health-cmd pg_isready
