@@ -1,5 +1,8 @@
 ## SDKMAN! Secure Proxy
 
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/sdkman/vendor-proxy)
+![Docker Image Version (latest semver)](https://img.shields.io/docker/v/sdkman/vendor-proxy?label=docker)
+
 This microservice can be used to proxy and secure other microservices. At the moment, the service provides lightweight Authentication and Authorisation.
 
 ### Consumer Authentication
@@ -76,10 +79,10 @@ Once the Consumer Key and Token have been obtained, they can be used to make sub
 
 ### Testing
 
-Start up supporting services:
+Start supporting database:
 
 ```
-$ ./compose up
+$ docker-compose up
 ```
 
 Run the tests
