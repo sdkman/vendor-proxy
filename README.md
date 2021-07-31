@@ -1,7 +1,6 @@
 ## SDKMAN! Secure Proxy
 
-![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/sdkman/vendor-proxy)
-![Docker Image Version (latest semver)](https://img.shields.io/docker/v/sdkman/vendor-proxy?label=docker)
+![Docker Image Version (latest semver)](https://img.shields.io/docker/v/sdkman/vendor-proxy?label=release)
 
 This microservice can be used to proxy and secure other microservices. At the moment, the service provides lightweight Authentication and Authorisation.
 
