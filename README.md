@@ -1,5 +1,6 @@
 ## SDKMAN! Secure Proxy
 
+![Build status](https://github.com/sdkman/vendor-proxy/actions/workflows/release.yml/badge.svg)
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/sdkman/vendor-proxy)
 
 This microservice can be used to proxy and secure other microservices. At the moment, the service provides lightweight Authentication and Authorisation.
