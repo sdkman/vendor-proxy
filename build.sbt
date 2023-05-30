@@ -14,7 +14,7 @@ libraryDependencies ++= Seq(
   ws,
   guice,
   "com.typesafe.play" %% "play-json" % "2.8.1",
-  "org.postgresql" % "postgresql" % "9.4.1211",
+  "org.postgresql" % "postgresql" % "42.5.4",
   "com.typesafe.play" %% "play-slick" % "4.0.2",
   "org.flywaydb" %% "flyway-play" % "5.4.0",
   "org.scalatest" %% "scalatest" % "3.1.0" % Test,
