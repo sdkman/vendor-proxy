@@ -11,7 +11,7 @@ jobs:
     environment: production
     services:
       postgres:
-        image: postgres:9.5
+        image: postgres:15
         env:
           POSTGRES_USER: "vendors"
           POSTGRES_PASSWORD: "vendors"
