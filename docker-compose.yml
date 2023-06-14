@@ -1,13 +1,50 @@
 version: '2'
 
 services:
-  postgres:
-    container_name: postgres
+  postgres_sdkman:
+    container_name: postgres-sdkman
     image: postgres:15
     ports:
      - "5432:5432"
     environment:
-      POSTGRES_USER: "vendors"
-      POSTGRES_PASSWORD: "vendors"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "sdkman"
+  postgres_vendors:
+    container_name: postgres-vendors
+    image: postgres:15
+    ports:
+     - "6432:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
       POSTGRES_DB: "vendors"
+  mongo:
+    container_name: mongo
+    image: mongo:3.2
+    ports:
+      - "27017:27017"
+  release:
+    container_name: vendor-release
+    image: sdkman/vendor-release:latest
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres-sdkman:5432/sdkman
+      MONGO_HOST: mongo
+    depends_on:
+      - mongo
+      - postgres_sdkman
+  proxy:
+    container_name: vendor-proxy
+    image: sdkman/vendor-proxy:latest
+    ports:
+      - "9000:9000"
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres-vendors:5432/vendors
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      CANDIDATE_ENDPOINT_API_URL: http://release:9000/candidate
+      RELEASE_ENDPOINT_API_URL: http://release:9000/release
+      DEFAULT_ENDPOINT_API_URL: http://release:9000/default
+    depends_on:
+      - postgres_vendors
 

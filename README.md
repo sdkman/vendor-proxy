@@ -18,6 +18,12 @@ It acts as a proxy, searching for the presence of two request headers:
 The application hinges on configuration to be set up in the `conf/application.conf` field. Here are some current examples as used by the SDKMAN API:
 
     services {
+      "candidate" = {
+        url = "http://somehost:8080/candidate"
+        url = ${?CANDIDATE_ENDPOINT_API_URL}
+        serviceToken = "default_token"
+        serviceToken = ${?RELEASE_API_TOKEN}
+      }
       "release" = {
         url = "http://somehost:8080/release"
         url = ${?RELEASE_ENDPOINT_API_URL}
@@ -79,14 +85,23 @@ Once the Consumer Key and Token have been obtained, they can be used to make sub
 
 ### Testing
 
-Start supporting database:
+Publish docker images for all vendor services:
+
+```
+cd /path/to/vendor-release
+sbt docker:publishLocal
+cd /path/to/vendor-proxy
+sbt docker:publishLocal
+```
+
+Start all datastores and services with docker-compose:
 
 ```
 $ docker-compose up
 ```
 
-Run the tests
+Now interact with the vendor-proxy service through `localhost:9000`:
 
 ```
-$ sbt test
+
 ```
