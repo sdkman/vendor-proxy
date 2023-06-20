@@ -42,7 +42,7 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
 
   And("""^the remote release service will return some (.*) response$""") { status: String =>
     stubFor(
-      post(urlEqualTo("/release"))
+      post(urlEqualTo("/versions"))
         .willReturn(
           aResponse()
             .withBody("""{"status": 201, "message": "blah blah"}""")
@@ -53,7 +53,7 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
 
   Given("""^the remote release service will return a (.*) response:$""") { (status: String, payload: String) =>
     stubFor(
-      post(urlEqualTo("/release"))
+      post(urlEqualTo("/versions"))
         .willReturn(
           aResponse()
             .withBody(payload.stripMargin)
@@ -64,35 +64,35 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
 
   Then("""^the remote release service expects a Candidates header (.*)""") { header: String =>
     verify(
-      postRequestedFor(urlEqualTo("/release"))
+      postRequestedFor(urlEqualTo("/versions"))
         .withHeader("Candidates", equalTo(header))
     )
   }
 
   Then("""^the remote release service expects a Vendor header (.*)""") { header: String =>
     verify(
-      postRequestedFor(urlEqualTo("/release"))
+      postRequestedFor(urlEqualTo("/versions"))
         .withHeader("Vendor", equalTo(header))
     )
   }
 
   Then("""^the remote release service expects an empty Candidates header""") {
     verify(
-      postRequestedFor(urlEqualTo("/release"))
+      postRequestedFor(urlEqualTo("/versions"))
         .withHeader("Candidates", equalTo(""))
     )
   }
 
   Then("""^the remote release service expects no Vendor header""") {
     verify(
-      postRequestedFor(urlEqualTo("/release"))
+      postRequestedFor(urlEqualTo("/versions"))
         .withoutHeader("Vendor")
     )
   }
 
   Then("""^the remote release service expects payload and appropriate headers:$""") { payload: String =>
     verify(
-      postRequestedFor(urlEqualTo("/release"))
+      postRequestedFor(urlEqualTo("/versions"))
         .withRequestBody(equalToJson(payload.stripMargin))
         .withHeader("Service-Token", equalTo("default_token"))
         .withHeader("Candidates", equalTo("groovy"))
@@ -100,7 +100,7 @@ class ReleaseSteps extends ScalaDsl with EN with Matchers {
   }
 
   And("""^the remote release service expects NO posts$""") { () =>
-    verify(0, postRequestedFor(urlEqualTo("/release")))
+    verify(0, postRequestedFor(urlEqualTo("/versions")))
   }
 
 }

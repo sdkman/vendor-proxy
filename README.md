@@ -18,21 +18,21 @@ It acts as a proxy, searching for the presence of two request headers:
 The application hinges on configuration to be set up in the `conf/application.conf` field. Here are some current examples as used by the SDKMAN API:
 
     services {
-      "candidate" = {
-        url = "http://somehost:8080/candidate"
+      "candidates" = {
+        url = "http://somehost:8080/candidates"
         url = ${?CANDIDATE_ENDPOINT_API_URL}
         serviceToken = "default_token"
         serviceToken = ${?RELEASE_API_TOKEN}
       }
-      "release" = {
-        url = "http://somehost:8080/release"
-        url = ${?RELEASE_ENDPOINT_API_URL}
+      "candidates/default" = {
+        url = "http://somehost:8080/candidates/default"
+        url = ${?DEFAULT_ENDPOINT_API_URL}
         serviceToken = "default_token"
         serviceToken = ${?RELEASE_API_TOKEN}
       }
-      "default" = {
-        url = "http://somehost:8080/default"
-        url = ${?DEFAULT_ENDPOINT_API_URL}
+      "versions" = {
+        url = "http://somehost:8080/versions"
+        url = ${?RELEASE_ENDPOINT_API_URL}
         serviceToken = "default_token"
         serviceToken = ${?RELEASE_API_TOKEN}
       }
@@ -85,6 +85,28 @@ Once the Consumer Key and Token have been obtained, they can be used to make sub
 
 ### Testing
 
+#### Cucumber with SBT
+
+To run the service tests, spin up postgres with docker as follows:
+
+```
+docker run \                                                                                                        1m 27s   18:37:43
+        --name postgres \
+        -p 5432:5432 \
+        -e POSTGRES_USER=postgres \
+        -e POSTGRES_PASSWORD=postgres \
+        -e POSTGRES_DB=vendors \
+        -d postgres
+```
+
+Then run the tests with sbt:
+
+```
+sbt test
+```
+
+#### Running all vendor services in docker-compose
+
 Publish docker images for all vendor services:
 
 ```
@@ -102,6 +124,61 @@ $ docker-compose up
 
 Now interact with the vendor-proxy service through `localhost:9000`:
 
+Create consumer:
+```
+curl --request PATCH \
+  --url http://localhost:9000/consumers \
+  --header 'Admin-Token: default_token' \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"consumer" : "marco@sdkman.io",
+	"candidates": [
+		"grails"
+	]
+}'
 ```
 
+Create candidate:
+```
+curl --request POST \
+  --url http://localhost:9000/candidates \
+  --header 'Consumer-Key: 831a10da1a6808227d8ea75c30f1243f' \
+  --header 'Consumer-Token: token' \
+  --header 'Content-Type: application/json' \
+  --data '{
+	 "id" : "grails",
+   "candidate" : "grails",
+   "name" : "Grails",
+   "description" : "It'\''s old and useless by now",
+   "websiteUrl" : "https://github.com/grails/grails",
+   "distribution" : "UNIVERSAL"
+}'
+```
+
+Release version:
+```
+curl --request POST \
+  --url http://localhost:9000/versions \
+  --header 'Consumer-Key: 831a10da1a6808227d8ea75c30f1243f' \
+  --header 'Consumer-Token: token' \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"candidate":"grails",
+	"version":"2.1.1",
+	"platform":"UNIVERSAL",
+	"url" : "https://github.com/grails/grails-core/releases/download/v5.3.2/grails-5.3.2.zip"
+}'
+```
+
+Set version as default
+```
+curl --request PUT \
+  --url http://localhost:9000/candidates/default \
+  --header 'Consumer-Key: 831a10da1a6808227d8ea75c30f1243f' \
+  --header 'Consumer-Token: token' \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"candidate":"grails",
+	"version":"2.1.1"
+}'
 ```

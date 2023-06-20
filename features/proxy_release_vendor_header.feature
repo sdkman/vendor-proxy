@@ -5,7 +5,7 @@ Feature: Vendor header
     And the header Consumer-Key b37048237fc587ef9caa29af9b57b762 is presented
     And the header Consumer-Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 is presented
     And the remote release service will return some CREATED response
-    When posting JSON on the /release endpoint:
+    When posting JSON on the /versions endpoint:
     """
           |{
           |  "candidate" : "jmc",
@@ -23,7 +23,7 @@ Feature: Vendor header
     And the header Consumer-Key a4bf5bbb9feaa2713d99a3b52ab80024 is presented
     And the header Consumer-Token e0bf422d63d65ef1f4fe573a0d461d695edef45a541f07f3747ad37188329368 is presented
     And the remote release service will return some CREATED response
-    When posting JSON on the /release endpoint:
+    When posting JSON on the /versions endpoint:
     """
           |{
           |  "candidate" : "groovy",

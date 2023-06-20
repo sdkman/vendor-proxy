@@ -42,9 +42,9 @@ services:
       DATABASE_URL: jdbc:postgresql://postgres-vendors:5432/vendors
       DATABASE_USER: postgres
       DATABASE_PASSWORD: postgres
-      CANDIDATE_ENDPOINT_API_URL: http://release:9000/candidate
-      RELEASE_ENDPOINT_API_URL: http://release:9000/release
-      DEFAULT_ENDPOINT_API_URL: http://release:9000/default
+      CANDIDATE_ENDPOINT_API_URL: http://release:9000/candidates
+      RELEASE_ENDPOINT_API_URL: http://release:9000/versions
+      DEFAULT_ENDPOINT_API_URL: http://release:9000/candidates/default
     depends_on:
       - postgres_vendors
 
