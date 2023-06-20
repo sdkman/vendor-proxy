@@ -2,7 +2,7 @@ Feature: Create Consumer
 
   Scenario: A Consumer is assigned an Access Key and Access Token
     Given the header Admin-Token default_token is presented
-    When the /consumers endpoint receives a PATCH request:
+    When the /consumers endpoint receives a POST request:
     """
       |{
       |   "consumer" : "john.doe@example.org",
@@ -15,7 +15,7 @@ Feature: Create Consumer
 
   Scenario: Attempt Consumer creation without Admin Token
     Given the header Admin-Token invalid_token is presented
-    When the /consumers endpoint receives a PATCH request:
+    When the /consumers endpoint receives a POST request:
     """
       |{
       |   "consumer" : "john.doe@example.org",
@@ -28,7 +28,7 @@ Feature: Create Consumer
 
   Scenario: An invalid payload is submitted for Consumer Creation
     Given the header Admin-Token default_token is presented
-    When the /consumers endpoint receives a PATCH request:
+    When the /consumers endpoint receives a POST request:
     """
       |{
       |   "gloop" : "john.doe@example.org"
@@ -40,7 +40,7 @@ Feature: Create Consumer
 
   Scenario: Consumer details are persisted
     Given the header Admin-Token default_token is presented
-    When the /consumers endpoint receives a PATCH request:
+    When the /consumers endpoint receives a POST request:
     """
       |{
       |   "consumer" : "john.doe@example.org",
@@ -54,7 +54,7 @@ Feature: Create Consumer
 
   Scenario: A vendor is assigned to a Consumer
     Given the header Admin-Token default_token is presented
-    When the /consumers endpoint receives a PATCH request:
+    When the /consumers endpoint receives a POST request:
     """
       |{
       |   "consumer" : "john.doe@example.org",
@@ -68,7 +68,7 @@ Feature: Create Consumer
 
   Scenario: A single candidate is assigned to a Consumer
     Given the header Admin-Token default_token is presented
-    When the /consumers endpoint receives a PATCH request:
+    When the /consumers endpoint receives a POST request:
     """
       |{
       |   "consumer" : "john.doe@example.org",
@@ -83,7 +83,7 @@ Feature: Create Consumer
 
   Scenario: Multiple candidates are assigned to a Consumer
     Given the header Admin-Token default_token is presented
-    When the /consumers endpoint receives a PATCH request:
+    When the /consumers endpoint receives a POST request:
     """
       |{
       |   "consumer" : "john.doe@example.org",
@@ -100,7 +100,7 @@ Feature: Create Consumer
 
   Scenario: A candidate is removed from a Consumer
     Given the header Admin-Token default_token is presented
-    When the /consumers endpoint receives a PATCH request:
+    When the /consumers endpoint receives a POST request:
     """
       |{
       |   "consumer" : "john.doe@example.org",
@@ -114,7 +114,7 @@ Feature: Create Consumer
     And the Consumer john.doe@example.org has been persisted
     And the persisted Consumer john.doe@example.org has an associated candidate scala
     And the persisted Consumer john.doe@example.org has an associated candidate sbt
-    When the /consumers endpoint receives a PATCH request:
+    When the /consumers endpoint receives a POST request:
     """
       |{
       |   "consumer" : "john.doe@example.org",
@@ -126,7 +126,7 @@ Feature: Create Consumer
     Then the returned status is CREATED
     And the persisted Consumer john.doe@example.org has an associated candidate scala
     And the persisted Consumer john.doe@example.org does not have an associated candidate sbt
-    When the /consumers endpoint receives a PATCH request:
+    When the /consumers endpoint receives a POST request:
     """
       |{
       |   "consumer" : "john.doe@example.org",
@@ -139,7 +139,7 @@ Feature: Create Consumer
 
   Scenario: An updated candidate results in a reissued token
     Given the header Admin-Token default_token is presented
-    When the /consumers endpoint receives a PATCH request:
+    When the /consumers endpoint receives a POST request:
     """
       |{
       |   "consumer" : "john.doe@example.org",
@@ -152,7 +152,7 @@ Feature: Create Consumer
     Then the returned status is CREATED
     And the create response contains a valid consumerToken
     And the persisted Consumer john.doe@example.org has a valid sha256 representation of the consumerToken
-    When the /consumers endpoint receives a PATCH request:
+    When the /consumers endpoint receives a POST request:
     """
       |{
       |   "consumer" : "john.doe@example.org",

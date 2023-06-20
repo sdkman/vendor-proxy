@@ -19,7 +19,7 @@ class ConsumerSteps
 
   private val ConsumerTokenPattern = """^[a-f0-9]{64}$""".r
 
-  And("""^the (.*) endpoint receives a PATCH request:$""") { (endpoint: String, json: String) =>
+  And("""^the (.*) endpoint receives a POST request:$""") { (endpoint: String, json: String) =>
     val response = Http(AppHost + endpoint)
       .postData(json.stripMargin)
       .method("PATCH")
