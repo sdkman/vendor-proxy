@@ -30,7 +30,7 @@ class ConsumerRepo @Inject() (val dbConfigProvider: DatabaseConfigProvider)
     } yield id).transactionally)
   }
 
-  def deleteByOwner(owner: String): Future[Int] = db.run(sqlu"DELETE FROM credentials WHERE owner = $owner")
+  def deleteByConsumerKey(key: String): Future[Int] = db.run(sqlu"DELETE FROM credentials WHERE key = $key")
 
   implicit val getConsumerFieldsResult: GetResult[ConsumerFields] = GetResult(r => ConsumerFields(r.<<, r.<<))
 

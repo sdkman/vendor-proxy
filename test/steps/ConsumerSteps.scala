@@ -22,7 +22,7 @@ class ConsumerSteps
   And("""^the (.*) endpoint receives a POST request:$""") { (endpoint: String, json: String) =>
     val response = Http(AppHost + endpoint)
       .postData(json.stripMargin)
-      .method("PATCH")
+      .method("POST")
       .headers(World.headers.toMap)
       .option(HttpOptions.connTimeout(10000))
       .option(HttpOptions.readTimeout(10000))
@@ -46,13 +46,6 @@ class ConsumerSteps
     Json.parse(responseBody).validate[DeleteResponse].asOpt match {
       case Some(actual) => actual.consumerKey shouldBe key
       case None         => fail("no key found")
-    }
-  }
-
-  And("""^the delete response contains an owner of value (.*)$""") { owner: String =>
-    Json.parse(responseBody).validate[DeleteResponse].asOpt match {
-      case Some(actual) => actual.owner shouldBe owner
-      case None         => fail("owner not found")
     }
   }
 

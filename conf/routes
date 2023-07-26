@@ -2,10 +2,10 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET         /alive            controllers.HealthController.alive
-PATCH       /consumers        controllers.ConsumerController.create
-DELETE      /consumers/:name  controllers.ConsumerController.revoke(name: String)
-DELETE      /*service         controllers.ProxyController.execute(service: String)
-PATCH       /*service         controllers.ProxyController.execute(service: String)
-POST        /*service         controllers.ProxyController.execute(service: String)
-PUT         /*service         controllers.ProxyController.execute(service: String)
+GET           /alive                 controllers.HealthController.alive
+POST          /consumers             controllers.ConsumerController.create
+DELETE        /consumers/:key        controllers.ConsumerController.revoke(key: String)
+DELETE        /*service              controllers.ProxyController.execute(service: String)
+PATCH         /*service              controllers.ProxyController.execute(service: String)
+POST          /*service              controllers.ProxyController.execute(service: String)
+PUT           /*service              controllers.ProxyController.execute(service: String)

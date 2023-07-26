@@ -2,7 +2,6 @@ package controllers
 
 import com.google.inject.Inject
 import domain.Consumers
-import org.postgresql.util.PSQLException
 import play.api.Logging
 import play.api.libs.json.Json.toJson
 import play.api.mvc._
@@ -41,12 +40,13 @@ class ConsumerController @Inject() (val repo: ConsumerRepo, cc: ControllerCompon
     }
   }
 
-  def revoke(owner: String) = AsAdministrator(parse.default, controllerComponents.actionBuilder) { req =>
-    repo.deleteByOwner(owner).map {
-      case 1 =>
-        Ok(toJson(DeleteResponse(generateConsumerKey(owner), owner, "consumer deleted")))
-      case 0 =>
-        NotFound
+  def revoke(consumerKey: String) =
+    AsAdministrator(parse.default, controllerComponents.actionBuilder) { _ =>
+      repo.deleteByConsumerKey(consumerKey).map {
+        case 1 =>
+          Ok(toJson(DeleteResponse(consumerKey, "consumer deleted")))
+        case 0 =>
+          NotFound
+      }
     }
-  }
 }
