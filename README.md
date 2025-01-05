@@ -90,8 +90,7 @@ Once the Consumer Key and Token have been obtained, they can be used to make sub
 To run the service tests, spin up postgres with docker as follows:
 
 ```
-docker run \                                                                                                        1m 27s   18:37:43
-        --name postgres \
+docker run --name postgres \
         -p 5432:5432 \
         -e POSTGRES_USER=postgres \
         -e POSTGRES_PASSWORD=postgres \
