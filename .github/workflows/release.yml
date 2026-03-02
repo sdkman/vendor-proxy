@@ -27,6 +27,11 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
+    - name: Set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
     - name: Log in to Docker Hub
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
     - uses: oleksiyrudenko/gha-git-credentials@v2.1
@@ -49,7 +54,7 @@ jobs:
           MSG="❌ Release build failed: ${REPO}"
           MSG+=$'\nRun: '"${RUN_URL}"
           PAYLOAD=$(jq -n --arg msg "$MSG" --arg name "GitHub CI" \
-            '{message: $msg, name: $name, deliver: true, channel: "discord", to: "user:918237603617206303"}')
+            '{message: $msg, name: $name}')
           curl -sf -X POST \
             -H "Authorization: Bearer ${{ secrets.OPENCLAW_HOOK_TOKEN }}" \
             -H "Content-Type: application/json" \
